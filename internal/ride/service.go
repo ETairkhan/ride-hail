@@ -31,7 +31,7 @@ func createRideHandler(dbConn *pgx.Conn, rabbitConn *amqp091.Connection) http.Ha
 		// Create a new user ID (or fetch from the database)
 		passengerId := uuid.GenerateUUID()
 
-
+/
 		// Insert the new user into the database
 		err := insertUser(dbConn, passengerId)
 		if err != nil {

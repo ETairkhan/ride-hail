@@ -1,6 +1,6 @@
 
 services:
-  ride-hail:
+  ride-service:
     build:
       context: .
       dockerfile: Dockerfile  # This points to the Dockerfile
@@ -19,7 +19,7 @@ services:
       DB_NAME: ridehail_db
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
-    container_name: ride-hail
+    container_name: ride-service
 
   db: 
     container_name: db
