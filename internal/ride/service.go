@@ -13,55 +13,55 @@ import (
 	"github.com/rabbitmq/amqp091-go"
 )
 
+// User struct
 type User struct {
 	UserID        string
-	created_at    time.Time
-	updated_at    time.Time
-	email         string
-	role          string // PASSENGER, DRIVER, ADMIN
-	status        string // ACTIVE, INACTIVE, BANNED
-	password_hash string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	Email         string
+	Role          string // PASSENGER, DRIVER, ADMIN
+	Status        string // ACTIVE, INACTIVE, BANNED
+	PasswordHash  string
 }
 
-// Coordinates struct to hold latitude, longitude, and address
+// Coordinates struct
 type Coordinates struct {
 	CoordinateID    string
-	created_at      time.Time
-	updated_at      time.Time
-	entityID        string // driver_id or passenger_id
-	entity_type     string // driver or passenger
-	address         string
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	EntityID        string // driver_id or passenger_id
+	EntityType      string // driver or passenger
+	Address         string
 	Latitude        float64
 	Longitude       float64
-	fareAmount      float64
-	distanceKm      float64
-	durationMinutes int64
-	isCurrent       bool
+	FareAmount      float64
+	DistanceKm      float64
+	DurationMinutes int64
+	IsCurrent       bool
 }
 
-// RideDetails struct now includes pickup and destination coordinates
+// Rides struct now includes pickup and destination coordinates
 type Rides struct {
 	RideID                 string
-	created_at             time.Time
-	updated_at             time.Time
-	ride_number            string
+	CreatedAt              time.Time
+	UpdatedAt              time.Time
+	RideNumber             string
 	PassengerID            string
 	DriverID               string
-	VehicleType            string // ECONOMY , PREMIUM, XL
-	status                 string // REQUESTED, MATCHED, EN_ROUTE, ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED
-	priority               int64
-	requested_at           time.Time
-	matched_at             time.Time
-	started_at             time.Time
-	completed_at           time.Time
-	cancelled_at           time.Time
-	cancellation_reason    string
-	estimated_fare         float64
-	final_fare             float64
-	PickupCoordinates      Coordinates // Embed the Coordinates struct for pickup
-	DestinationCoordinates Coordinates // Embed the Coordinates struct for destination
+	VehicleType            string // ECONOMY, PREMIUM, XL
+	Status                 string // REQUESTED, MATCHED, EN_ROUTE, ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED
+	Priority               int64
+	RequestedAt            time.Time
+	MatchedAt              time.Time
+	StartedAt              time.Time
+	CompletedAt            time.Time
+	CancelledAt            time.Time
+	CancellationReason     string
+	EstimatedFare          float64
+	FinalFare              float64
+	PickupCoordinates      Coordinates
+	DestinationCoordinates Coordinates
 }
-
 // --------------------- MAIN SERVICE ---------------------
 
 func StartService(config utils.Config, dbConn *pgx.Conn, rabbitConn *amqp091.Connection) {
