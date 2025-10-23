@@ -1,5 +1,4 @@
 #!/bin/bash
-cd ../
 cp .env.example .env
 cp config.yaml.example config.yaml
 

@@ -1,6 +1,6 @@
 module ride-hail
 
-go 1.23.3
+go 1.24
 
 require (
 	github.com/jackc/pgx/v5 v5.7.6
