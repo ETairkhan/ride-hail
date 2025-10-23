@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Go Application
+  app:
+    build: .
+    container_name: ridehail-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=ridehail_user
+      - DB_PASSWORD=ridehail_pass
+      - DB_NAME=ridehail_db
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+    networks:
+      - ridehail-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:13
+    container_name: ridehail-postgres
+    environment:
+      - POSTGRES_USER=ridehail_user
+      - POSTGRES_PASSWORD=ridehail_pass
+      - POSTGRES_DB=ridehail_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ridehail-network
+
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ridehail-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Web UI for RabbitMQ
+    networks:
+      - ridehail-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  ridehail-network:
+    driver: bridge

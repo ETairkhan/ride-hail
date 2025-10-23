@@ -1,0 +1,18 @@
+database:
+  host: "localhost"
+  port: 5432
+  user: "ridehail_user"
+  password: "ridehail_pass"
+  database: "ridehail_db"
+
+rabbitmq:
+  host: "localhost"
+  port: 5672
+  user: "guest"
+  password: "guest"
+
+websocket:
+  port: 8080
+
+services:
+  driver_location_service: 3001
