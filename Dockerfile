@@ -1,4 +1,4 @@
-FROM golang:1.23
+FROM golang:1.24
 
 WORKDIR /cmd/ride-hail
 
@@ -9,6 +9,6 @@ COPY . .
 
 RUN go build -o app ./cmd/ride-hail/main.go
 
-EXPOSE 8080
+EXPOSE 3000
 
 CMD ["./app"]
