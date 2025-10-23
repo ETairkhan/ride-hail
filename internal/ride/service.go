@@ -7,61 +7,11 @@ import (
 	"net/http"
 	"ride-hail/internal/common/uuid"
 	"ride-hail/pkg/utils"
-	"time"
-
+	"ride-hail/internal/domain/models"
 	"github.com/jackc/pgx/v5"
 	"github.com/rabbitmq/amqp091-go"
 )
 
-// User struct
-type User struct {
-	UserID        string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-	Email         string
-	Role          string // PASSENGER, DRIVER, ADMIN
-	Status        string // ACTIVE, INACTIVE, BANNED
-	PasswordHash  string
-}
-
-// Coordinates struct
-type Coordinates struct {
-	CoordinateID    string
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	EntityID        string // driver_id or passenger_id
-	EntityType      string // driver or passenger
-	Address         string
-	Latitude        float64
-	Longitude       float64
-	FareAmount      float64
-	DistanceKm      float64
-	DurationMinutes int64
-	IsCurrent       bool
-}
-
-// Rides struct now includes pickup and destination coordinates
-type Rides struct {
-	RideID                 string
-	CreatedAt              time.Time
-	UpdatedAt              time.Time
-	RideNumber             string
-	PassengerID            string
-	DriverID               string
-	VehicleType            string // ECONOMY, PREMIUM, XL
-	Status                 string // REQUESTED, MATCHED, EN_ROUTE, ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED
-	Priority               int64
-	RequestedAt            time.Time
-	MatchedAt              time.Time
-	StartedAt              time.Time
-	CompletedAt            time.Time
-	CancelledAt            time.Time
-	CancellationReason     string
-	EstimatedFare          float64
-	FinalFare              float64
-	PickupCoordinates      Coordinates
-	DestinationCoordinates Coordinates
-}
 // --------------------- MAIN SERVICE ---------------------
 
 func StartService(config utils.Config, dbConn *pgx.Conn, rabbitConn *amqp091.Connection) {
@@ -76,32 +26,35 @@ func StartService(config utils.Config, dbConn *pgx.Conn, rabbitConn *amqp091.Con
 }
 
 // --------------------- CREATE RIDE ---------------------
-
 func createRideHandler(dbConn *pgx.Conn, rabbitConn *amqp091.Connection) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Create a new user ID (or fetch from the database)
 		passengerId := uuid.GenerateUUID()
 
-		rideDetails := RideDetails{
+		// Create RideDetails
+		rideDetails := models.Rides{
 			PassengerID: passengerId,
-			PickupCoordinates: Coordinates{
+			PickupCoordinates: models.Coordinates{
 				Latitude:  43.238949,
 				Longitude: 76.889709,
-				Address:   "Pickup Location Address", // Provide the pickup address
+				Address:   "Pickup Location Address",
 			},
-			DestinationCoordinates: Coordinates{
+			DestinationCoordinates: models.Coordinates{
 				Latitude:  43.222015,
 				Longitude: 76.851511,
-				Address:   "Destination Location Address", // Provide the destination address
+				Address:   "Destination Location Address",
 			},
-			RideType: "ECONOMY",
+			VehicleType: "ECONOMY",
 		}
 
+		// Create ride in database
 		rideID, err := createRideInDB(r.Context(), dbConn, rideDetails)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("DB error: %v", err), http.StatusInternalServerError)
 			return
 		}
 
+		// Notify RabbitMQ
 		err = notifyRideRequestToRabbitMQ(rabbitConn, rideID, rideDetails)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("RabbitMQ error: %v", err), http.StatusInternalServerError)
@@ -111,6 +64,7 @@ func createRideHandler(dbConn *pgx.Conn, rabbitConn *amqp091.Connection) http.Ha
 		fmt.Fprintf(w, "Ride created successfully with ID: %s", rideID)
 	}
 }
+
 
 // --------------------- CANCEL RIDE ---------------------
 
@@ -130,7 +84,7 @@ func cancelRideHandler(dbConn *pgx.Conn, rabbitConn *amqp091.Connection) http.Ha
 
 // --------------------- DATABASE ---------------------
 
-func createRideInDB(ctx context.Context, dbConn *pgx.Conn, rideDetails RideDetails) (string, error) {
+func createRideInDB(ctx context.Context, dbConn *pgx.Conn, rideDetails models.Rides) (string, error) {
 	// Insert pickup coordinates into coordinates table
 	pickupCoordID, err := insertCoordinates(dbConn, rideDetails.PassengerID, "passenger", rideDetails.PickupCoordinates)
 	if err != nil {
@@ -148,7 +102,7 @@ func createRideInDB(ctx context.Context, dbConn *pgx.Conn, rideDetails RideDetai
 	_, err = dbConn.Exec(ctx, `
 		INSERT INTO rides (id, passenger_id, ride_number, pickup_coordinate_id, destination_coordinate_id, ride_type)
 		VALUES ($1, $2, $3, $4, $5, $6)`,
-		rideID, rideDetails.PassengerID, "RIDE_001", pickupCoordID, destinationCoordID, rideDetails.RideType)
+		rideID, rideDetails.PassengerID, "RIDE_001", pickupCoordID, destinationCoordID, rideDetails.VehicleType)
 	if err != nil {
 		return "", fmt.Errorf("failed to insert ride into DB: %w", err)
 	}
@@ -156,22 +110,24 @@ func createRideInDB(ctx context.Context, dbConn *pgx.Conn, rideDetails RideDetai
 	return rideID, nil
 }
 
-// insertCoordinates now accepts a Coordinates struct
-func insertCoordinates(dbConn *pgx.Conn, entityID string, entityType string, coordinates Coordinates) (string, error) {
+// Insert coordinates into the coordinates table
+func insertCoordinates(dbConn *pgx.Conn, entityID string, entityType string, coordinates models.Coordinates) (string, error) {
 	// Generate a new UUID for the coordinates entry
 	coordID := uuid.GenerateUUID() // Use manual UUID generation
 
-	// Insert coordinates with the provided address
+	// Insert coordinates into the database
 	_, err := dbConn.Exec(context.Background(), `
-		INSERT INTO coordinates (id, entity_id, entity_type, latitude, longitude, address)
-		VALUES ($1, $2, $3, $4, $5, $6)`,
-		coordID, entityID, entityType, coordinates.Latitude, coordinates.Longitude, coordinates.Address)
+		INSERT INTO coordinates (id, entity_id, entity_type, latitude, longitude, address, fare_amount, distance_km, duration_minutes, is_current)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+		coordID, entityID, entityType, coordinates.Latitude, coordinates.Longitude, coordinates.Address,
+		coordinates.FareAmount, coordinates.DistanceKm, coordinates.DurationMinutes, coordinates.IsCurrent)
 	if err != nil {
 		return "", fmt.Errorf("failed to insert coordinates: %w", err)
 	}
 
 	return coordID, nil
 }
+
 
 func cancelRideInDB(ctx context.Context, dbConn *pgx.Conn, rideID string) error {
 	_, err := dbConn.Exec(ctx, `UPDATE rides SET status = 'CANCELLED' WHERE id = $1`, rideID)
@@ -183,7 +139,7 @@ func cancelRideInDB(ctx context.Context, dbConn *pgx.Conn, rideID string) error 
 
 // --------------------- RABBITMQ ---------------------
 
-func notifyRideRequestToRabbitMQ(rabbitConn *amqp091.Connection, rideID string, rideDetails RideDetails) error {
+func notifyRideRequestToRabbitMQ(rabbitConn *amqp091.Connection, rideID string, rideDetails models.Rides) error {
 	ch, err := rabbitConn.Channel()
 	if err != nil {
 		return fmt.Errorf("failed to open a channel: %w", err)
