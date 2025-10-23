@@ -31,6 +31,14 @@ func createRideHandler(dbConn *pgx.Conn, rabbitConn *amqp091.Connection) http.Ha
 		// Create a new user ID (or fetch from the database)
 		passengerId := uuid.GenerateUUID()
 
+
+		// Insert the new user into the database
+		err := insertUser(dbConn, passengerId)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("DB error: %v", err), http.StatusInternalServerError)
+			return
+		}
+
 		// Create RideDetails
 		rideDetails := models.Rides{
 			PassengerID: passengerId,
@@ -65,6 +73,18 @@ func createRideHandler(dbConn *pgx.Conn, rabbitConn *amqp091.Connection) http.Ha
 	}
 }
 
+// Insert a new user into the users table (if needed)
+func insertUser(dbConn *pgx.Conn, userID string) error {
+	// Insert a new user into the users table (add other necessary fields like email, role, etc.)
+	_, err := dbConn.Exec(context.Background(), `
+		INSERT INTO users (id, created_at, updated_at, email, role, status, password_hash)
+		VALUES ($1, now(), now(), $2, $3, 'ACTIVE', $4)`,
+		userID, "user@example.com", "PASSENGER", "hashed_password")
+	if err != nil {
+		return fmt.Errorf("failed to insert user: %w", err)
+	}
+	return nil
+}
 
 // --------------------- CANCEL RIDE ---------------------
 
@@ -100,7 +120,7 @@ func createRideInDB(ctx context.Context, dbConn *pgx.Conn, rideDetails models.Ri
 	// Insert ride data into rides table, using the coordinate IDs
 	rideID := uuid.GenerateUUID() // Use manual UUID generation
 	_, err = dbConn.Exec(ctx, `
-		INSERT INTO rides (id, passenger_id, ride_number, pickup_coordinate_id, destination_coordinate_id, ride_type)
+		INSERT INTO rides (id, passenger_id, ride_number, pickup_coordinate_id, destination_coordinate_id, vehicle_type)
 		VALUES ($1, $2, $3, $4, $5, $6)`,
 		rideID, rideDetails.PassengerID, "RIDE_001", pickupCoordID, destinationCoordID, rideDetails.VehicleType)
 	if err != nil {
