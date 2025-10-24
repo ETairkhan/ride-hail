@@ -9,6 +9,6 @@ COPY . .
 
 RUN go build -o app ./cmd/ride-hail/main.go
 
-EXPOSE 3000
+EXPOSE 8080
 
 CMD ["./app"]

@@ -99,7 +99,6 @@ func RideStartService(config config.Config, dbConn *pgx.Conn, rabbitConn *amqp09
 	authMiddleware := middleware.AuthMiddleware(authService)
 	mux.Handle("POST /rides", authMiddleware(http.HandlerFunc(rideHandler.CreateRide)))
 	mux.Handle("POST /rides/{ride_id}/cancel", authMiddleware(http.HandlerFunc(rideHandler.CancelRide)))
-	mux.Handle("GET /auth/profile", authMiddleware(http.HandlerFunc(authHandler.GetProfile)))
 	
 	// Start server
 	log.Printf("Starting Ride Service on port %s", config.RideServicePort)
