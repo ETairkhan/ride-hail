@@ -5,10 +5,10 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"ride-hail/config"
-	"ride-hail/internal/adpater/db"
-	"ride-hail/internal/adpater/rabbitmq"
-	ride "ride-hail/internal/app/services"
+	"ride-hail/internal/adapter/db"
+	"ride-hail/internal/adapter/rabbitmq"
+	ride "ride-hail/internal/app"
+	"ride-hail/internal/common/config"
 	"syscall"
 )
 
@@ -18,14 +18,14 @@ func main() {
 	config := config.LoadConfig()
 
 	// Инициализация базы данных
-	dbConnection, err := db.InitDB(config, ctx)
+	dbConnection, err := db.InitDB(config.DBConfig, ctx)
 	if err != nil {
 		log.Fatalf("Error connecting to DB: %v", err)
 	}
 	defer dbConnection.Close(ctx)
 
 	// Инициализация RabbitMQ
-	rabbitConnection, err := rabbitmq.InitRabbitMQ(config)
+	rabbitConnection, err := rabbitmq.InitRabbitMQ(config.RabbitMQConfig)
 	if err != nil {
 		log.Fatalf("Error connecting to RabbitMQ: %v", err)
 	}

@@ -1,11 +1,11 @@
-package services
+package app
 
 import (
 	"context"
 	"fmt"
 	"log"
 	"net/http"
-	"ride-hail/config"
+	"ride-hail/internal/common/config"
 	"ride-hail/internal/common/uuid"
 	"ride-hail/internal/domain/models"
 
@@ -19,8 +19,8 @@ func StartService(config config.Config, dbConn *pgx.Conn, rabbitConn *amqp091.Co
 	http.HandleFunc("/rides", createRideHandler(dbConn, rabbitConn))
 	http.HandleFunc("/rides/{ride_id}/cancel", cancelRideHandler(dbConn, rabbitConn))
 
-	log.Println("Starting Ride Service on port", config.RideServicePort)
-	err := http.ListenAndServe(fmt.Sprintf(":%s", config.RideServicePort), nil)
+	log.Println("Starting Ride Service on port", config.ServicesConfig.RideServicePort)
+	err := http.ListenAndServe(fmt.Sprintf(":%s", config.ServicesConfig.RideServicePort), nil)
 	if err != nil {
 		log.Fatalf("Error starting Ride Service: %v", err)
 	}

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -16,11 +17,13 @@ type Config struct {
 }
 
 type DBConfig struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-	Name     string
+	Host      string
+	Port      string
+	User      string
+	Password  string
+	Name      string
+	JWTSecret string
+	JWTExpiry int
 }
 
 type RabbitMQConfig struct {
@@ -44,11 +47,13 @@ type ServicesConfig struct {
 func LoadConfig() Config {
 	defaultValues := GetDefaultValue()
 	dbConfig := DBConfig{
-		Host:     getEnv("DB_HOST", defaultValues["DB_HOST"]),
-		Port:     getEnv("DB_PORT", defaultValues["DB_PORT"]),
-		User:     getEnv("DB_USER", defaultValues["DB_USER"]),
-		Password: getEnv("DB_PASSWORD", defaultValues["DB_PASSWORD"]),
-		Name:     getEnv("DB_NAME", defaultValues["DB_NAME"]),
+		Host:      getEnv("DB_HOST", defaultValues["DB_HOST"]),
+		Port:      getEnv("DB_PORT", defaultValues["DB_PORT"]),
+		User:      getEnv("DB_USER", defaultValues["DB_USER"]),
+		Password:  getEnv("DB_PASSWORD", defaultValues["DB_PASSWORD"]),
+		Name:      getEnv("DB_NAME", defaultValues["DB_NAME"]),
+		JWTSecret: getEnv("JWT_SECRET", defaultValues["JWT_SECRET"]),
+		JWTExpiry: getEnvAsInt("JWT_EXPIRY_HOURS", defaultValues["JWT_EXPIRY_HOURS"]),
 	}
 	rabbitMQConfig := RabbitMQConfig{
 		Host:     getEnv("RABBITMQ_HOST", defaultValues["RABBITMQ_HOST"]),
@@ -79,6 +84,23 @@ func getEnv(key, defaultValue string) string {
 		return defaultValue
 	}
 	return value
+}
+
+// Получение значения из переменной окружения как int с дефолтным значением
+func getEnvAsInt(key, defaultValue string) int {
+	value := os.Getenv(key)
+	intDefaultValue, err := strconv.Atoi(defaultValue)
+	if err != nil {
+		return 24
+	}
+	if value == "" {
+		return intDefaultValue
+	}
+	intValue, err := strconv.Atoi(value)
+	if err != nil {
+		return intDefaultValue
+	}
+	return intValue
 }
 
 // GetDefaultValue создает карту с ключами и их дефолтными значениями из config.yaml
