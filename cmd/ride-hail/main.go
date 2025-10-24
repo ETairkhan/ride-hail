@@ -5,17 +5,17 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"ride-hail/internal/ride"
-	"ride-hail/pkg/db"
-	"ride-hail/pkg/rabbitmq"
-	"ride-hail/pkg/utils"
+	"ride-hail/config"
+	"ride-hail/internal/adpater/db"
+	"ride-hail/internal/adpater/rabbitmq"
+	ride "ride-hail/internal/app/services"
 	"syscall"
 )
 
 func main() {
 	// Загружаем конфигурацию
 	ctx := context.Background()
-	config := utils.LoadConfig()
+	config := config.LoadConfig()
 
 	// Инициализация базы данных
 	dbConnection, err := db.InitDB(config, ctx)

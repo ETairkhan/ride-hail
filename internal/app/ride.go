@@ -1,20 +1,21 @@
-package ride
+package services
 
 import (
 	"context"
 	"fmt"
 	"log"
 	"net/http"
+	"ride-hail/config"
 	"ride-hail/internal/common/uuid"
-	"ride-hail/pkg/utils"
 	"ride-hail/internal/domain/models"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/rabbitmq/amqp091-go"
 )
 
 // --------------------- MAIN SERVICE ---------------------
 
-func StartService(config utils.Config, dbConn *pgx.Conn, rabbitConn *amqp091.Connection) {
+func StartService(config config.Config, dbConn *pgx.Conn, rabbitConn *amqp091.Connection) {
 	http.HandleFunc("/rides", createRideHandler(dbConn, rabbitConn))
 	http.HandleFunc("/rides/{ride_id}/cancel", cancelRideHandler(dbConn, rabbitConn))
 
@@ -31,7 +32,6 @@ func createRideHandler(dbConn *pgx.Conn, rabbitConn *amqp091.Connection) http.Ha
 		// Create a new user ID (or fetch from the database)
 		passengerId := uuid.GenerateUUID()
 
-/
 		// Insert the new user into the database
 		err := insertUser(dbConn, passengerId)
 		if err != nil {
@@ -147,7 +147,6 @@ func insertCoordinates(dbConn *pgx.Conn, entityID string, entityType string, coo
 
 	return coordID, nil
 }
-
 
 func cancelRideInDB(ctx context.Context, dbConn *pgx.Conn, rideID string) error {
 	_, err := dbConn.Exec(ctx, `UPDATE rides SET status = 'CANCELLED' WHERE id = $1`, rideID)
