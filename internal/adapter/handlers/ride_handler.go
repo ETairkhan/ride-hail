@@ -31,9 +31,9 @@ func (h *RideHandler) CreateRide(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get authenticated user from context (set by AuthMiddleware)
-	user, ok := middleware.GetUserFromContext(r.Context())
-	if !ok {
+	// Get user from context (set by middleware)
+	userID, _, ok := middleware.GetUserFromContext(r.Context())
+	if !ok || userID == "" {
 		http.Error(w, "User not authenticated", http.StatusUnauthorized)
 		return
 	}
@@ -45,7 +45,7 @@ func (h *RideHandler) CreateRide(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Use authenticated user's ID as passenger ID
-	req.PassengerID = user.ID
+	req.PassengerID = userID
 
 	if req.PickupAddress == "" || req.DestinationAddress == "" {
 		http.Error(w, "Pickup and destination addresses are required", http.StatusBadRequest)

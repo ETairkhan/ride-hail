@@ -49,7 +49,7 @@ type CreateRideRequest struct {
 	DestinationLatitude float64     `json:"destination_latitude"`
 	DestinationLongitude float64    `json:"destination_longitude"`
 	DestinationAddress  string      `json:"destination_address"`
-	VehicleType         VehicleType `json:"vehicle_type"`
+	VehicleType         VehicleType `json:"ride_type"`
 }
 
 type CancelRideRequest struct {

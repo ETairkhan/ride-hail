@@ -21,7 +21,6 @@ func NewAuthHandler(authService services.AuthService) *AuthHandler {
 func (h *AuthHandler) SetupRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /auth/register", h.Register)
 	mux.HandleFunc("POST /auth/login", h.Login)
-	mux.HandleFunc("GET /auth/profile", h.GetProfile)
 }
 
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
@@ -97,14 +96,14 @@ func (h *AuthHandler) GetProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get user from context (set by AuthMiddleware)
-	user, ok := middleware.GetUserFromContext(r.Context())
-	if !ok {
+	// Get user from context (set by middleware)
+	userID, _, ok := middleware.GetUserFromContext(r.Context())
+	if !ok || userID == "" {
 		http.Error(w, "User not authenticated", http.StatusUnauthorized)
 		return
 	}
 
-	response, err := h.authService.GetUserProfile(r.Context(), user.ID)
+	response, err := h.authService.GetUserProfile(r.Context(), userID)
 	if err != nil {
 		log.Printf("Get profile failed: %v", err)
 		http.Error(w, "Failed to get profile", http.StatusInternalServerError)

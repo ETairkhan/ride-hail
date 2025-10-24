@@ -95,10 +95,12 @@ func RideStartService(config config.Config, dbConn *pgx.Conn, rabbitConn *amqp09
 	// Public routes (no authentication required)
 	authHandler.SetupRoutes(mux)
 	
-	// Protected routes (require authentication)
-	authMiddleware := middleware.AuthMiddleware(authService)
-	mux.Handle("POST /rides", authMiddleware(http.HandlerFunc(rideHandler.CreateRide)))
-	mux.Handle("POST /rides/{ride_id}/cancel", authMiddleware(http.HandlerFunc(rideHandler.CancelRide)))
+	// Protected routes with your JWT middleware
+	authMiddleware := middleware.NewAuthMiddleware(config.JWTSecret)
+	mux.Handle("GET /auth/profile", authMiddleware.Wrap(http.HandlerFunc(authHandler.GetProfile)))
+	mux.Handle("POST /rides", authMiddleware.Wrap(http.HandlerFunc(rideHandler.CreateRide)))
+	mux.Handle("POST /rides/{ride_id}/cancel", authMiddleware.Wrap(http.HandlerFunc(rideHandler.CancelRide)))
+	
 	
 	// Start server
 	log.Printf("Starting Ride Service on port %s", config.RideServicePort)
