@@ -1,36 +1,74 @@
-package utils
+package config
 
 import (
+	"bufio"
 	"os"
+	"regexp"
+	"strings"
 )
 
 // Структура для хранения конфигурации
 type Config struct {
-	DBHost           string
-	DBPort           string
-	DBUser           string
-	DBPassword       string
-	DBName           string
-	RabbitMQHost     string
-	RabbitMQPort     string
-	RabbitMQUser     string
-	RabbitMQPassword string
-	RideServicePort  string
+	DBConfig        DBConfig
+	RabbitMQConfig  RabbitMQConfig
+	WebSocketConfig WebSocketConfig
+	ServicesConfig  ServicesConfig
+}
+
+type DBConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Name     string
+}
+
+type RabbitMQConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+}
+
+type WebSocketConfig struct {
+	Port string
+}
+
+type ServicesConfig struct {
+	RideServicePort           string
+	DriverLocationServicePort string
+	AdminServicePort          string
 }
 
 // Загрузка конфигурации из переменных окружения
 func LoadConfig() Config {
+	defaultValues := GetDefaultValue()
+	dbConfig := DBConfig{
+		Host:     getEnv("DB_HOST", defaultValues["DB_HOST"]),
+		Port:     getEnv("DB_PORT", defaultValues["DB_PORT"]),
+		User:     getEnv("DB_USER", defaultValues["DB_USER"]),
+		Password: getEnv("DB_PASSWORD", defaultValues["DB_PASSWORD"]),
+		Name:     getEnv("DB_NAME", defaultValues["DB_NAME"]),
+	}
+	rabbitMQConfig := RabbitMQConfig{
+		Host:     getEnv("RABBITMQ_HOST", defaultValues["RABBITMQ_HOST"]),
+		Port:     getEnv("RABBITMQ_PORT", defaultValues["RABBITMQ_PORT"]),
+		User:     getEnv("RABBITMQ_USER", defaultValues["RABBITMQ_USER"]),
+		Password: getEnv("RABBITMQ_PASSWORD", defaultValues["RABBITMQ_PASSWORD"]),
+	}
+	webSocketConfig := WebSocketConfig{
+		Port: getEnv("WS_PORT", defaultValues["WS_PORT"]),
+	}
+	servicesConfig := ServicesConfig{
+		RideServicePort:           getEnv("RIDE_SERVICE_PORT", defaultValues["RIDE_SERVICE_PORT"]),
+		DriverLocationServicePort: getEnv("DRIVER_LOCATION_SERVICE_PORT", defaultValues["DRIVER_LOCATION_SERVICE_PORT"]),
+		AdminServicePort:          getEnv("ADMIN_SERVICE_PORT", defaultValues["ADMIN_SERVICE_PORT"]),
+	}
 	return Config{
-		DBHost:           getEnv("DB_HOST", "localhost"),
-		DBPort:           getEnv("DB_PORT", "5432"),
-		DBUser:           getEnv("DB_USER", "ridehail_user"),
-		DBPassword:       getEnv("DB_PASSWORD", "ridehail_pass"),
-		DBName:           getEnv("DB_NAME", "ridehail_db"),
-		RabbitMQHost:     getEnv("RABBITMQ_HOST", "localhost"),
-		RabbitMQPort:     getEnv("RABBITMQ_PORT", "5672"),
-		RabbitMQUser:     getEnv("RABBITMQ_USER", "guest"),
-		RabbitMQPassword: getEnv("RABBITMQ_PASSWORD", "guest"),
-		RideServicePort:  getEnv("RIDE_SERVICE_PORT", "3000"),
+		DBConfig:        dbConfig,
+		RabbitMQConfig:  rabbitMQConfig,
+		WebSocketConfig: webSocketConfig,
+		ServicesConfig:  servicesConfig,
 	}
 }
 
@@ -41,4 +79,27 @@ func getEnv(key, defaultValue string) string {
 		return defaultValue
 	}
 	return value
+}
+
+// GetDefaultValue создает карту с ключами и их дефолтными значениями из config.yaml
+func GetDefaultValue() map[string]string {
+	file, err := os.Open("config.yaml")
+	if err != nil {
+		return make(map[string]string)
+	}
+	defer file.Close()
+
+	defaultValues := make(map[string]string)
+	scanner := bufio.NewScanner(file)
+	re := regexp.MustCompile(`\$\{([^:]+):-([^}]+)\}`)
+
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		matches := re.FindStringSubmatch(line)
+		if len(matches) == 3 {
+			defaultValues[matches[1]] = matches[2]
+		}
+	}
+
+	return defaultValues
 }
