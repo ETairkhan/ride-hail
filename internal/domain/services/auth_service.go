@@ -134,15 +134,17 @@ func (s *authService) Login(ctx context.Context, req *models.AuthRequest) (*mode
 }
 
 func (s *authService) ValidateToken(tokenString string) (*models.User, error) {
-	// Parse the token with the key function
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	// Define the key function separately to avoid type issues
+	keyFunc := func(token *jwt.Token) (interface{}, error) {
 		// Validate the signing method
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(s.config.JWTSecret), nil
-	})
+	}
 
+	// Parse the token with the key function
+	token, err := jwt.Parse(tokenString, keyFunc)
 	if err != nil {
 		return nil, err
 	}
