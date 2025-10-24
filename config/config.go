@@ -1,7 +1,8 @@
-package utils
+package config
 
 import (
 	"os"
+	"strconv"
 )
 
 // Структура для хранения конфигурации
@@ -16,6 +17,9 @@ type Config struct {
 	RabbitMQUser     string
 	RabbitMQPassword string
 	RideServicePort  string
+	// JWT Configuration
+	JWTSecret string `yaml:"jwt_secret"`
+	JWTExpiry int    `yaml:"jwt_expiry_hours"`
 }
 
 // Загрузка конфигурации из переменных окружения
@@ -31,6 +35,9 @@ func LoadConfig() Config {
 		RabbitMQUser:     getEnv("RABBITMQ_USER", "guest"),
 		RabbitMQPassword: getEnv("RABBITMQ_PASSWORD", "guest"),
 		RideServicePort:  getEnv("RIDE_SERVICE_PORT", "3000"),
+		// JWT Configuration
+		JWTSecret: getEnv("JWT_SECRET", "your-super-secret-jwt-key-minimum-32-chars-here"),
+		JWTExpiry: getEnvAsInt("JWT_EXPIRY_HOURS", 24),
 	}
 }
 
@@ -41,4 +48,13 @@ func getEnv(key, defaultValue string) string {
 		return defaultValue
 	}
 	return value
+}
+
+func getEnvAsInt(key string, defaultValue int) int {
+	if value := os.Getenv(key); value != "" {
+		if intValue, err := strconv.Atoi(value); err == nil {
+			return intValue
+		}
+	}
+	return defaultValue
 }

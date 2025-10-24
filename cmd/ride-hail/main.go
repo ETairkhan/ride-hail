@@ -6,9 +6,9 @@ import (
 	"os"
 	"os/signal"
 	"ride-hail/config"
-	"ride-hail/internal/adpater/db"
-	"ride-hail/internal/adpater/rabbitmq"
-	ride "ride-hail/internal/app/services"
+	"ride-hail/internal/adapter/db"
+	"ride-hail/internal/adapter/rabbitmq"
+	"ride-hail/internal/app"
 	"syscall"
 )
 
@@ -32,7 +32,7 @@ func main() {
 	defer rabbitConnection.Close()
 
 	// Запуск сервисов
-	go ride.StartService(config, dbConnection, rabbitConnection)
+	go app.RideStartService(config, dbConnection, rabbitConnection)
 
 	// Ожидаем завершения программы по сигналу
 	stop := make(chan os.Signal, 1)
