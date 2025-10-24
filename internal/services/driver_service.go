@@ -31,9 +31,13 @@ func NewDriverService(db *database.DB, rabbitMQ *database.RabbitMQ, wsHub *webso
 		cfg:      cfg,
 	}
 
-	// Start consuming messages
-	go ds.consumeRideRequests()
-	go ds.consumeRideStatusUpdates()
+	// Start consuming messages only if RabbitMQ is available
+	if rabbitMQ != nil {
+		go ds.consumeRideRequests()
+		go ds.consumeRideStatusUpdates()
+	} else {
+		log.Println("RabbitMQ not available - message consuming disabled")
+	}
 
 	return ds
 }
@@ -442,6 +446,11 @@ func (ds *DriverService) FindNearbyDrivers(ctx context.Context, pickupLat, picku
 }
 
 func (ds *DriverService) consumeRideRequests() {
+	if ds.rabbitMQ == nil {
+		log.Println("RabbitMQ not available, cannot consume ride requests")
+		return
+	}
+
 	ch, err := ds.rabbitMQ.Conn.Channel()
 	if err != nil {
 		log.Printf("Failed to open RabbitMQ channel: %v", err)
@@ -505,6 +514,8 @@ func (ds *DriverService) consumeRideRequests() {
 		return
 	}
 
+	log.Println("Started consuming ride requests from RabbitMQ")
+
 	for msg := range msgs {
 		var rideRequest models.RideRequest
 		if err := json.Unmarshal(msg.Body, &rideRequest); err != nil {
@@ -557,13 +568,21 @@ func (ds *DriverService) handleRideRequest(ctx context.Context, request models.R
 }
 
 func (ds *DriverService) consumeRideStatusUpdates() {
+	if ds.rabbitMQ == nil {
+		log.Println("RabbitMQ not available, cannot consume ride status updates")
+		return
+	}
+
 	// Similar implementation to consumeRideRequests but for ride status updates
-	// This would consume from the ride_status queue and update driver status accordingly
 	log.Println("Starting ride status updates consumer...")
 	// Implementation would go here
 }
 
 func (ds *DriverService) publishDriverStatus(driverID, status, rideID string) {
+	if ds.rabbitMQ == nil {
+		return // Skip if RabbitMQ is not available
+	}
+
 	// Publish driver status update to RabbitMQ
 	statusMsg := models.DriverStatusMessage{
 		DriverID:  driverID,
@@ -576,6 +595,10 @@ func (ds *DriverService) publishDriverStatus(driverID, status, rideID string) {
 }
 
 func (ds *DriverService) publishRideStatus(rideID, status, driverID string) {
+	if ds.rabbitMQ == nil {
+		return // Skip if RabbitMQ is not available
+	}
+
 	// Publish ride status update to RabbitMQ
 	statusMsg := models.RideStatusMessage{
 		RideID:    rideID,
@@ -588,11 +611,19 @@ func (ds *DriverService) publishRideStatus(rideID, status, driverID string) {
 }
 
 func (ds *DriverService) broadcastLocationUpdate(location models.LocationMessage) {
+	if ds.rabbitMQ == nil {
+		return // Skip if RabbitMQ is not available
+	}
+
 	// Broadcast location update via fanout exchange
 	ds.publishToRabbitMQ("location_fanout", "", location)
 }
 
 func (ds *DriverService) publishToRabbitMQ(exchange, routingKey string, message interface{}) {
+	if ds.rabbitMQ == nil {
+		return // Skip if RabbitMQ is not available
+	}
+
 	ch, err := ds.rabbitMQ.Conn.Channel()
 	if err != nil {
 		log.Printf("Failed to open channel for publishing: %v", err)

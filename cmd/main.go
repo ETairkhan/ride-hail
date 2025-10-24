@@ -22,6 +22,12 @@ func main() {
 		log.Fatalf("Failed to load configuration: %v", err)
 	}
 
+	// Log configuration (without passwords)
+	log.Printf("Configuration loaded: DB=%s:%d, RabbitMQ=%s:%d, ServicePort=%d",
+		cfg.Database.Host, cfg.Database.Port,
+		cfg.RabbitMQ.Host, cfg.RabbitMQ.Port,
+		cfg.Services.DriverLocationService)
+
 	// Initialize database connection
 	db, err := database.New(cfg.Database)
 	if err != nil {
@@ -29,16 +35,21 @@ func main() {
 	}
 	defer db.Close()
 
-	// Initialize RabbitMQ connection
-	rabbitConn, err := database.NewRabbitMQ(cfg.RabbitMQ)
-	if err != nil {
-		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
-	}
-	defer rabbitConn.Close()
-
 	// Initialize WebSocket hub
 	wsHub := websocket.NewHub()
 	go wsHub.Run()
+
+	// Initialize RabbitMQ connection (with retry logic)
+	var rabbitConn *database.RabbitMQ
+	rabbitConn, err = database.NewRabbitMQ(cfg.RabbitMQ)
+	if err != nil {
+		log.Printf("Warning: Failed to connect to RabbitMQ: %v", err)
+		log.Println("Application will start without RabbitMQ functionality")
+		// Continue without RabbitMQ - set to nil
+		rabbitConn = nil
+	} else {
+		defer rabbitConn.Close()
+	}
 
 	// Initialize services
 	driverService := services.NewDriverService(db, rabbitConn, wsHub, cfg)

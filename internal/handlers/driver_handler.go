@@ -8,13 +8,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/websocket"
 	"ride-hail/internal/config"
 	"ride-hail/internal/services"
 	"ride-hail/models"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/gorilla/websocket"
 	rideWebsocket "ride-hail/websocket"
 )
 
@@ -38,16 +35,16 @@ func NewDriverHandler(driverService *services.DriverService) *DriverHandler {
 }
 
 type Server struct {
-	router        *chi.Mux
+	router        *http.ServeMux
 	cfg           *config.Config
 	driverHandler *DriverHandler
-	wsHub         *rideWebsocket.Hub // Use renamed websocket package here
+	wsHub         *rideWebsocket.Hub // WebSocket hub for managing connections
 	server        *http.Server
 }
 
 func NewServer(cfg *config.Config, driverHandler *DriverHandler, wsHub *rideWebsocket.Hub) *Server {
 	s := &Server{
-		router:        chi.NewRouter(),
+		router:        http.NewServeMux(),
 		cfg:           cfg,
 		driverHandler: driverHandler,
 		wsHub:         wsHub,
@@ -57,22 +54,18 @@ func NewServer(cfg *config.Config, driverHandler *DriverHandler, wsHub *rideWebs
 }
 
 func (s *Server) setupRoutes() {
-	s.router.Use(middleware.Logger)
-	s.router.Use(middleware.Recoverer)
-	s.router.Use(middleware.RequestID)
-	s.router.Use(middleware.Timeout(60 * time.Second))
-
-	s.router.Route("/drivers", func(r chi.Router) {
-		r.Route("/{driver_id}", func(r chi.Router) {
-			r.Post("/online", s.driverHandler.GoOnline)
-			r.Post("/offline", s.driverHandler.GoOffline)
-			r.Post("/location", s.driverHandler.UpdateLocation)
-			r.Post("/start", s.driverHandler.StartRide)
-			r.Post("/complete", s.driverHandler.CompleteRide)
-		})
+	// Health check endpoint
+	s.router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{"status": "healthy"})
 	})
-
-	s.router.Get("/ws/drivers/{driver_id}", s.serveDriverWebSocket)
+	// Define routes
+	s.router.HandleFunc("/drivers/{driver_id}/online", s.driverHandler.GoOnline)
+	s.router.HandleFunc("/drivers/{driver_id}/offline", s.driverHandler.GoOffline)
+	s.router.HandleFunc("/drivers/{driver_id}/location", s.driverHandler.UpdateLocation)
+	s.router.HandleFunc("/drivers/{driver_id}/start", s.driverHandler.StartRide)
+	s.router.HandleFunc("/drivers/{driver_id}/complete", s.driverHandler.CompleteRide)
+	s.router.HandleFunc("/ws/drivers/{driver_id}", s.serveDriverWebSocket)
 }
 
 func (s *Server) Start() error {
@@ -94,7 +87,7 @@ func (s *Server) Shutdown(ctx context.Context) error {
 }
 
 func (s *Server) serveDriverWebSocket(w http.ResponseWriter, r *http.Request) {
-	driverID := chi.URLParam(r, "driver_id")
+	driverID := r.URL.Path[len("/ws/drivers/"):] // Extract driverID from URL path
 
 	conn, err := wsUpgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -103,7 +96,7 @@ func (s *Server) serveDriverWebSocket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client := &rideWebsocket.Client{ // Use renamed websocket package
+	client := &rideWebsocket.Client{ // WebSocket client structure
 		ID:       driverID,
 		Conn:     conn,
 		Send:     make(chan []byte, 256),
@@ -151,8 +144,10 @@ type CompleteRideResponse struct {
 	Message        string    `json:"message"`
 }
 
+// DriverHandler methods
+
 func (h *DriverHandler) GoOnline(w http.ResponseWriter, r *http.Request) {
-	driverID := chi.URLParam(r, "driver_id")
+	driverID := r.URL.Path[len("/drivers/"):] // Extract driverID
 
 	var req struct {
 		Latitude  float64 `json:"latitude"`
@@ -180,7 +175,7 @@ func (h *DriverHandler) GoOnline(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *DriverHandler) GoOffline(w http.ResponseWriter, r *http.Request) {
-	driverID := chi.URLParam(r, "driver_id")
+	driverID := r.URL.Path[len("/drivers/"):] // Extract driverID
 
 	ctx := r.Context()
 	session, err := h.driverService.GoOffline(ctx, driverID)
@@ -198,7 +193,7 @@ func (h *DriverHandler) GoOffline(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *DriverHandler) UpdateLocation(w http.ResponseWriter, r *http.Request) {
-	driverID := chi.URLParam(r, "driver_id")
+	driverID := r.URL.Path[len("/drivers/"):] // Extract driverID
 
 	var req models.LocationUpdate
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -227,7 +222,7 @@ func (h *DriverHandler) UpdateLocation(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *DriverHandler) StartRide(w http.ResponseWriter, r *http.Request) {
-	driverID := chi.URLParam(r, "driver_id")
+	driverID := r.URL.Path[len("/drivers/"):] // Extract driverID
 
 	var req struct {
 		RideID   string          `json:"ride_id"`
@@ -262,7 +257,7 @@ func (h *DriverHandler) StartRide(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *DriverHandler) CompleteRide(w http.ResponseWriter, r *http.Request) {
-	driverID := chi.URLParam(r, "driver_id")
+	driverID := r.URL.Path[len("/drivers/"):] // Extract driverID
 
 	var req struct {
 		RideID                string          `json:"ride_id"`

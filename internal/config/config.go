@@ -1,64 +1,116 @@
 package config
 
 import (
-	"fmt"
-	"gopkg.in/yaml.v3"
 	"os"
+	"strconv"
 )
 
 type DatabaseConfig struct {
-	Host     string `yaml:"host" env:"DB_HOST" env-default:"localhost"`
-	Port     int    `yaml:"port" env:"DB_PORT" env-default:"5432"`
-	User     string `yaml:"user" env:"DB_USER" env-default:"ridehail_user"`
-	Password string `yaml:"password" env:"DB_PASSWORD" env-default:"ridehail_pass"`
-	Database string `yaml:"database" env:"DB_NAME" env-default:"ridehail_db"`
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	User     string `json:"user"`
+	Password string `json:"password"`
+	Database string `json:"database"`
 }
 
 type RabbitMQConfig struct {
-	Host     string `yaml:"host" env:"RABBITMQ_HOST" env-default:"localhost"`
-	Port     int    `yaml:"port" env:"RABBITMQ_PORT" env-default:"5672"`
-	User     string `yaml:"user" env:"RABBITMQ_USER" env-default:"guest"`
-	Password string `yaml:"password" env:"RABBITMQ_PASSWORD" env-default:"guest"`
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	User     string `json:"user"`
+	Password string `json:"password"`
 }
 
 type WebSocketConfig struct {
-	Port int `yaml:"port" env:"WS_PORT" env-default:"8080"`
+	Port int `json:"port"`
 }
 
 type ServicesConfig struct {
-	DriverLocationService int `yaml:"driver_location_service" env:"DRIVER_LOCATION_SERVICE_PORT" env-default:"3001"`
+	DriverLocationService int `json:"driver_location_service"`
 }
 
 type Config struct {
-	Database  DatabaseConfig  `yaml:"database"`
-	RabbitMQ  RabbitMQConfig  `yaml:"rabbitmq"`
-	WebSocket WebSocketConfig `yaml:"websocket"`
-	Services  ServicesConfig  `yaml:"services"`
+	Database  DatabaseConfig  `json:"database"`
+	RabbitMQ  RabbitMQConfig  `json:"rabbitmq"`
+	WebSocket WebSocketConfig `json:"websocket"`
+	Services  ServicesConfig  `json:"services"`
 }
 
 func Load() (*Config, error) {
-	configPath := os.Getenv("CONFIG_PATH")
-	if configPath == "" {
-		configPath = "config.yaml"
+	// Set default values first
+	cfg := &Config{
+		Database: DatabaseConfig{
+			Host:     "postgres",
+			Port:     5432,
+			User:     "ridehail_user",
+			Password: "ridehail_pass",
+			Database: "ridehail_db",
+		},
+		RabbitMQ: RabbitMQConfig{
+			Host:     "rabbitmq",
+			Port:     5672,
+			User:     "guest",
+			Password: "guest",
+		},
+		WebSocket: WebSocketConfig{
+			Port: 8080,
+		},
+		Services: ServicesConfig{
+			DriverLocationService: 3001,
+		},
 	}
 
-	data, err := os.ReadFile(configPath)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read config file: %w", err)
-	}
-
-	var cfg Config
-	if err := yaml.Unmarshal(data, &cfg); err != nil {
-		return nil, fmt.Errorf("failed to parse config file: %w", err)
-	}
-
-	// Override with environment variables if present
+	// Database - override with environment variables
 	if host := os.Getenv("DB_HOST"); host != "" {
 		cfg.Database.Host = host
 	}
 	if port := os.Getenv("DB_PORT"); port != "" {
-		fmt.Sscanf(port, "%d", &cfg.Database.Port)
+		portInt, err := strconv.Atoi(port)
+		if err == nil {
+			cfg.Database.Port = portInt
+		}
+	}
+	if user := os.Getenv("DB_USER"); user != "" {
+		cfg.Database.User = user
+	}
+	if password := os.Getenv("DB_PASSWORD"); password != "" {
+		cfg.Database.Password = password
+	}
+	if database := os.Getenv("DB_NAME"); database != "" {
+		cfg.Database.Database = database
 	}
 
-	return &cfg, nil
+	// RabbitMQ - override with environment variables
+	if rabbitHost := os.Getenv("RABBITMQ_HOST"); rabbitHost != "" {
+		cfg.RabbitMQ.Host = rabbitHost
+	}
+	if rabbitPort := os.Getenv("RABBITMQ_PORT"); rabbitPort != "" {
+		rabbitPortInt, err := strconv.Atoi(rabbitPort)
+		if err == nil {
+			cfg.RabbitMQ.Port = rabbitPortInt
+		}
+	}
+	if rabbitUser := os.Getenv("RABBITMQ_USER"); rabbitUser != "" {
+		cfg.RabbitMQ.User = rabbitUser
+	}
+	if rabbitPassword := os.Getenv("RABBITMQ_PASSWORD"); rabbitPassword != "" {
+		cfg.RabbitMQ.Password = rabbitPassword
+	}
+
+	// WebSocket
+	if wsPort := os.Getenv("WS_PORT"); wsPort != "" {
+		wsPortInt, err := strconv.Atoi(wsPort)
+		if err == nil {
+			cfg.WebSocket.Port = wsPortInt
+		}
+	}
+
+	// Services
+	if driverLocService := os.Getenv("DRIVER_LOCATION_SERVICE_PORT"); driverLocService != "" {
+		driverLocServiceInt, err := strconv.Atoi(driverLocService)
+		if err == nil {
+			cfg.Services.DriverLocationService = driverLocServiceInt
+		}
+	}
+
+	return cfg, nil
 }

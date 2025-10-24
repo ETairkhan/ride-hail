@@ -61,9 +61,32 @@ func NewRabbitMQ(cfg config.RabbitMQConfig) (*RabbitMQ, error) {
 	connStr := fmt.Sprintf("amqp://%s:%s@%s:%d/",
 		cfg.User, cfg.Password, cfg.Host, cfg.Port)
 
-	conn, err := amqp091.Dial(connStr)
+	log.Printf("Attempting to connect to RabbitMQ at %s:%d with user '%s'",
+		cfg.Host, cfg.Port, cfg.User)
+
+	// Add retry logic for RabbitMQ connection
+	var conn *amqp091.Connection
+	var err error
+
+	maxRetries := 30
+	retryInterval := 2 * time.Second
+
+	for i := 0; i < maxRetries; i++ {
+		conn, err = amqp091.Dial(connStr)
+		if err == nil {
+			break
+		}
+
+		log.Printf("Failed to connect to RabbitMQ (attempt %d/%d): %v", i+1, maxRetries, err)
+
+		if i < maxRetries-1 {
+			log.Printf("Retrying in %v...", retryInterval)
+			time.Sleep(retryInterval)
+		}
+	}
+
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to RabbitMQ: %w", err)
+		return nil, fmt.Errorf("failed to connect to RabbitMQ after %d attempts: %w", maxRetries, err)
 	}
 
 	log.Println("Successfully connected to RabbitMQ")
