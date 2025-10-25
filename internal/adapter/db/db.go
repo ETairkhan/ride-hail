@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"ride-hail/config"
+	"ride-hail/internal/common/config"
 
 	"github.com/jackc/pgx/v5"
 )
 
 // Инициализация подключения к базе данных
-func InitDB(config config.Config, ctx context.Context) (*pgx.Conn, error) {
+func InitDB(config config.DBConfig, ctx context.Context) (*pgx.Conn, error) {
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s",
-		config.DBUser, config.DBPassword, config.DBHost, config.DBPort, config.DBName)
+		config.User, config.Password, config.Host, config.Port, config.Name)
 
 	conn, err := pgx.Connect(context.Background(), connStr)
 	if err != nil {

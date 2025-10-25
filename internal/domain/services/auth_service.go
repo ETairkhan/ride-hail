@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"ride-hail/config"
+	"ride-hail/internal/common/config"
 	"ride-hail/internal/common/uuid"
 	"ride-hail/internal/domain/models"
 	"ride-hail/internal/domain/repo"
@@ -140,7 +140,7 @@ func (s *authService) ValidateToken(tokenString string) (*models.User, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(s.config.JWTSecret), nil
+		return []byte(s.config.DBConfig.JWTSecret), nil
 	}
 
 	// Parse the token with the key function
@@ -195,11 +195,11 @@ func (s *authService) generateToken(user *models.User) (string, error) {
 		"user_id": user.ID,
 		"email":   user.Email,
 		"role":    string(user.Role),
-		"exp":     time.Now().Add(time.Duration(s.config.JWTExpiry) * time.Hour).Unix(),
+		"exp":     time.Now().Add(time.Duration(s.config.DBConfig.JWTExpiry) * time.Hour).Unix(),
 		"iat":     time.Now().Unix(),
 		"iss":     "ride-hail-service",
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(s.config.JWTSecret))
+	return token.SignedString([]byte(s.config.DBConfig.JWTSecret))
 }

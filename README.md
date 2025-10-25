@@ -133,13 +133,14 @@ Authorization: Bearer {{token}}
 **Body:**
 ```json
 {
+  "passenger_id" : "
   "pickup_latitude": 43.238949,
   "pickup_longitude": 76.889709,
   "pickup_address": "Almaty Central Park",
   "destination_latitude": 43.222015,
   "destination_longitude": 76.851511,
   "destination_address": "Kok-Tobe Hill",
-  "vehicle_type": "ECONOMY"
+  "ride_type": "ECONOMY"
 }
 ```
 

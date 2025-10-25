@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"ride-hail/config"
+	"ride-hail/internal/common/config"
 	"ride-hail/internal/common/middleware"
 	"ride-hail/internal/domain/repo"
 	"ride-hail/internal/domain/services"
@@ -96,15 +96,15 @@ func RideStartService(config config.Config, dbConn *pgx.Conn, rabbitConn *amqp09
 	authHandler.SetupRoutes(mux)
 	
 	// Protected routes with your JWT middleware
-	authMiddleware := middleware.NewAuthMiddleware(config.JWTSecret)
+	authMiddleware := middleware.NewAuthMiddleware(config.DBConfig.JWTSecret)
 	mux.Handle("GET /auth/profile", authMiddleware.Wrap(http.HandlerFunc(authHandler.GetProfile)))
 	mux.Handle("POST /rides", authMiddleware.Wrap(http.HandlerFunc(rideHandler.CreateRide)))
 	mux.Handle("POST /rides/{ride_id}/cancel", authMiddleware.Wrap(http.HandlerFunc(rideHandler.CancelRide)))
 	
 	
 	// Start server
-	log.Printf("Starting Ride Service on port %s", config.RideServicePort)
-	err := http.ListenAndServe(":"+config.RideServicePort, mux)
+	log.Printf("Starting Ride Service on port %s", config.ServicesConfig.RideServicePort)
+	err := http.ListenAndServe(":"+config.ServicesConfig.RideServicePort, mux)
 	if err != nil {
 		log.Fatalf("Error starting Ride Service: %v", err)
 	}

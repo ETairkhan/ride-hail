@@ -3,16 +3,18 @@ package rabbitmq
 import (
 	"fmt"
 	"log"
-	"ride-hail/config"
+	"ride-hail/internal/common/config"
+
 	"github.com/rabbitmq/amqp091-go"
 )
 
 // Инициализация соединения с RabbitMQ
-func InitRabbitMQ(config config.Config) (*amqp091.Connection, error) {
+func InitRabbitMQ(config config.RabbitMQConfig) (*amqp091.Connection, error) {
 	// Формирование строки подключения с использованием данных из конфигурации
+	fmt.Println(config)
 	connStr := fmt.Sprintf("amqp://%s:%s@%s:%s/",
-		config.RabbitMQUser, config.RabbitMQPassword, config.RabbitMQHost, config.RabbitMQPort)
-	
+		config.User, config.Password, config.Host, config.Port)
+
 	// Устанавливаем соединение с RabbitMQ
 	conn, err := amqp091.Dial(connStr)
 	if err != nil {
