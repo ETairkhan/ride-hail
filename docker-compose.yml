@@ -1,78 +1,81 @@
+version: '3.8'
 
 services:
-  ride-service:
-    build:
-      context: .
-      dockerfile: Dockerfile  # This points to the Dockerfile
+  # Go Application
+  app:
+    build: .
+    container_name: ridehail-app
     ports:
-      - "3000:3000"
+      - "${DRIVER_LOCATION_SERVICE_PORT}:${DRIVER_LOCATION_SERVICE_PORT}"
+      - "${WS_PORT}:${WS_PORT}"
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
     environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: ridehail_user
-      DB_PASSWORD: ridehail_pass
-      DB_NAME: ridehail_db
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-    container_name: ride-service
-
-  db: 
-    container_name: db
-    image: postgres:15-alpine
-    restart: unless-stopped
-    environment:
-      - POSTGRES_USER=${DB_USER:-ridehail_user}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-ridehail_pass}  # Add this line for the superuser password
-      - POSTGRES_DB=${DB_NAME:-ridehail_db}
-    volumes:
-      - ./migrations/001_create_tables.up.sql:/docker-entrypoint-initdb.d/001_create_tables.up.sql
-    ports:
-      - "${DB_PORT:-5432}:5432"
-    healthcheck: 
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-ridehail_user} -d ${DB_NAME:-ridehail_db}"] 
-      interval: 5s 
-      timeout: 5s 
-      retries: 5
-    env_file:
-      - .env
-
-  
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3-management-alpine
-    ports:
-      - "${RABBITMQ_PORT:-5672}:5672"
-      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
-    # volumes:
-    #   - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
-    #   - ./rabbitmq_definitions.json:/etc/rabbitmq/rabbitmq_definitions.json
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - WS_PORT=${WS_PORT}
+      - DRIVER_LOCATION_SERVICE_PORT=${DRIVER_LOCATION_SERVICE_PORT}
+    networks:
+      - ridehail-network
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      interval: 5s
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${DRIVER_LOCATION_SERVICE_PORT}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:13
+    container_name: ridehail-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ridehail-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
       timeout: 5s
       retries: 5
-    env_file:
-      - .env
+      start_period: 10s
 
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ridehail-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    ports:
+      - "5672:5672"    # RabbitMQ default port
+      - "15672:15672"  # RabbitMQ Web UI
+    networks:
+      - ridehail-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
-  # migrate:
-  #   container_name: migrate
-  #   image: migrate/migrate
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #   volumes:
-  #     - ./migrations/001_create_tables.up.sql:/docker-entrypoint-initdb.d/001_create_tables.up.sql
-  #   command: [
-  #     "-path", "/migrations/",
-  #     "-database",
-  #     "postgres://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-admin}@db:${POSTGRES_PORT:-5432}/${POSTGRES_DBNAME:-5432}?sslmode=disable",
-  #     "up"
-  #   ]
-  #   env_file:
-  #     - .env
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  ridehail-network:
+    driver: bridge

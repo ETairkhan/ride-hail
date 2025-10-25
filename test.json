@@ -1,0 +1,297 @@
+{
+  "info": {
+    "name": "RideHail Driver Service API",
+    "description": "Complete test collection for RideHail Driver Service endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Driver Online/Offline",
+      "item": [
+        {
+          "name": "Go Online",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 40.7128,\n  \"longitude\": -74.0060\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/drivers/{{driver_id}}/online",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["drivers", "{{driver_id}}", "online"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Go Offline",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:3001/drivers/{{driver_id}}/offline",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["drivers", "{{driver_id}}", "offline"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Location Management",
+      "item": [
+        {
+          "name": "Update Location - Basic",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 40.7589,\n  \"longitude\": -73.9851,\n  \"address\": \"Times Square, New York\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/drivers/{{driver_id}}/location",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["drivers", "{{driver_id}}", "location"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Location - With Additional Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 40.7589,\n  \"longitude\": -73.9851,\n  \"address\": \"Times Square, New York\",\n  \"accuracy_meters\": 15.5,\n  \"speed_kmh\": 45.2,\n  \"heading_degrees\": 90.0\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/drivers/{{driver_id}}/location",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["drivers", "{{driver_id}}", "location"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Ride Management",
+      "item": [
+        {
+          "name": "Start Ride",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ride_id\": \"{{ride_id}}\",\n  \"driver_location\": {\n    \"latitude\": 40.7589,\n    \"longitude\": -73.9851\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/drivers/{{driver_id}}/start",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["drivers", "{{driver_id}}", "start"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Ride",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ride_id\": \"{{ride_id}}\",\n  \"final_location\": {\n    \"latitude\": 40.7614,\n    \"longitude\": -73.9776\n  },\n  \"actual_distance_km\": 3.2,\n  \"actual_duration_minutes\": 15\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/drivers/{{driver_id}}/complete",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["drivers", "{{driver_id}}", "complete"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "WebSocket Tests",
+      "item": [
+        {
+          "name": "WebSocket Connection",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "ws://localhost:8080/ws/drivers/{{driver_id}}",
+              "protocol": "ws",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["ws", "drivers", "{{driver_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Test Scenarios",
+      "item": [
+        {
+          "name": "Complete Driver Session Flow",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Set test data for complete flow",
+                  "pm.collectionVariables.set(\"driver_id\", \"driver_123\");",
+                  "pm.collectionVariables.set(\"ride_id\", \"ride_456\");",
+                  "console.log(\"Starting complete driver session flow test\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Tests will be added to each individual request"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "driver_id",
+      "value": "driver_123",
+      "type": "string"
+    },
+    {
+      "key": "ride_id",
+      "value": "ride_456",
+      "type": "string"
+    },
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001",
+      "type": "string"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "console.log('RideHail API Tests - Starting request');"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Common test for all responses",
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test(\"Response time is acceptable\", function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+          "});",
+          "",
+          "pm.test(\"Content-Type is application/json\", function () {",
+          "    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+          "});"
+        ]
+      }
+    }
+  ]
+}
