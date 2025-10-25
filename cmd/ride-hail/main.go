@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"ride-hail/internal/adapter/db"
 	"ride-hail/internal/adapter/rabbitmq"
-	ride "ride-hail/internal/app"
+	"ride-hail/internal/app"
 	"ride-hail/internal/common/config"
 	"syscall"
 )
@@ -16,6 +17,7 @@ func main() {
 	// Загружаем конфигурацию
 	ctx := context.Background()
 	config := config.LoadConfig()
+	fmt.Println(config)
 
 	// Инициализация базы данных
 	dbConnection, err := db.InitDB(config.DBConfig, ctx)
@@ -32,7 +34,7 @@ func main() {
 	defer rabbitConnection.Close()
 
 	// Запуск сервисов
-	go ride.StartService(config, dbConnection, rabbitConnection)
+	go app.RideStartService(config, dbConnection, rabbitConnection)
 
 	// Ожидаем завершения программы по сигналу
 	stop := make(chan os.Signal, 1)
