@@ -4,17 +4,6 @@ import (
 	"time"
 )
 
-type User struct {
-	ID           string    `json:"id"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
-	Email        string    `json:"email"`
-	Role         string    `json:"role"`
-	Status       string    `json:"status"`
-	PasswordHash string    `json:"-"`
-	Attrs        JSONMap   `json:"attrs,omitempty"`
-}
-
 type Driver struct {
 	ID            string    `json:"id"`
 	CreatedAt     time.Time `json:"created_at"`
@@ -36,21 +25,6 @@ type Driver struct {
 	Latitude      float64   `json:"latitude,omitempty"`
 	Longitude     float64   `json:"longitude,omitempty"`
 	DistanceKM    float64   `json:"distance_km,omitempty"`
-}
-
-type Coordinate struct {
-	ID              string    `json:"id"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
-	EntityID        string    `json:"entity_id"`
-	EntityType      string    `json:"entity_type"`
-	Address         string    `json:"address"`
-	Latitude        float64   `json:"latitude"`
-	Longitude       float64   `json:"longitude"`
-	FareAmount      *float64  `json:"fare_amount,omitempty"`
-	DistanceKM      *float64  `json:"distance_km,omitempty"`
-	DurationMinutes *int      `json:"duration_minutes,omitempty"`
-	IsCurrent       bool      `json:"is_current"`
 }
 
 type Location struct {
@@ -78,29 +52,6 @@ type LocationMessage struct {
 	SpeedKMH       float64   `json:"speed_kmh,omitempty"`
 	HeadingDegrees float64   `json:"heading_degrees,omitempty"`
 	Timestamp      time.Time `json:"timestamp"`
-}
-
-type Ride struct {
-	ID                      string     `json:"id"`
-	CreatedAt               time.Time  `json:"created_at"`
-	UpdatedAt               time.Time  `json:"updated_at"`
-	RideNumber              string     `json:"ride_number"`
-	PassengerID             string     `json:"passenger_id"`
-	DriverID                *string    `json:"driver_id,omitempty"`
-	VehicleType             string     `json:"vehicle_type"`
-	Status                  string     `json:"status"`
-	Priority                int        `json:"priority"`
-	RequestedAt             time.Time  `json:"requested_at"`
-	MatchedAt               *time.Time `json:"matched_at,omitempty"`
-	ArrivedAt               *time.Time `json:"arrived_at,omitempty"`
-	StartedAt               *time.Time `json:"started_at,omitempty"`
-	CompletedAt             *time.Time `json:"completed_at,omitempty"`
-	CancelledAt             *time.Time `json:"cancelled_at,omitempty"`
-	CancellationReason      *string    `json:"cancellation_reason,omitempty"`
-	EstimatedFare           float64    `json:"estimated_fare"`
-	FinalFare               *float64   `json:"final_fare,omitempty"`
-	PickupCoordinateID      string     `json:"pickup_coordinate_id"`
-	DestinationCoordinateID string     `json:"destination_coordinate_id"`
 }
 
 // Update the RideRequest struct to use VehicleType instead of RideType
