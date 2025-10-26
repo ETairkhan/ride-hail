@@ -6,40 +6,78 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"syscall"
+	"time"
+
 	"ride-hail/internal/adapter/db"
 	"ride-hail/internal/adapter/rabbitmq"
 	"ride-hail/internal/app"
 	"ride-hail/internal/common/config"
-	"syscall"
+
+	"ride-hail/internal/adapter/handlers"
+	"ride-hail/internal/adapter/websocket"
 )
 
 func main() {
-	// Загружаем конфигурацию
+	// Load configuration
 	ctx := context.Background()
-	config := config.LoadConfig()
-	fmt.Println(config)
+	cfg := config.LoadConfig()
+	fmt.Println(cfg)
 
-	// Инициализация базы данных
-	dbConnection, err := db.InitDB(config.DBConfig, ctx)
+	// Initialize database connection
+	dbConnection, err := db.InitDB(cfg.DBConfig, ctx)
 	if err != nil {
 		log.Fatalf("Error connecting to DB: %v", err)
 	}
 	defer dbConnection.Close(ctx)
 
-	// Инициализация RabbitMQ
-	rabbitConnection, err := rabbitmq.InitRabbitMQ(config.RabbitMQConfig)
+	// Initialize RabbitMQ with retry logic
+	var rabbitConnection *rabbitmq.RabbitMQ
+	rabbitConn, err := rabbitmq.InitRabbitMQ(cfg.RabbitMQConfig)
 	if err != nil {
-		log.Fatalf("Error connecting to RabbitMQ: %v", err)
+		log.Printf("Warning: Failed to connect to RabbitMQ: %v", err)
+		log.Println("Application will start without RabbitMQ functionality")
+		rabbitConnection = nil
+	} else {
+		rabbitConnection = &rabbitmq.RabbitMQ{Conn: rabbitConn}
+		defer rabbitConnection.Conn.Close()
 	}
-	defer rabbitConnection.Close()
 
-	// Запуск сервисов
-	go app.RideStartService(config, dbConnection, rabbitConnection)
+	// Initialize WebSocket hub
+	wsHub := websocket.NewHub()
+	go wsHub.Run()
 
-	// Ожидаем завершения программы по сигналу
+	// Initialize services
+	driverService := app.NewDriverService(dbConnection, rabbitConnection, wsHub, &cfg)
+
+	// Initialize handlers
+	driverHandler := handlers.NewDriverHandler(driverService)
+
+	// Start HTTP server
+	server := handlers.NewServer(&cfg, driverHandler, wsHub)
+
+	// Start server in a goroutine
+	go func() {
+		log.Printf("Starting Driver & Location Service on port %s", cfg.ServicesConfig.DriverLocationServicePort)
+		if err := server.Start(); err != nil {
+			log.Fatalf("Failed to start server: %v", err)
+		}
+	}()
+
+	// Wait for interrupt signal
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 	<-stop
 
 	log.Println("Shutting down services...")
+
+	// Graceful shutdown
+	shutdownCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		log.Fatalf("Server forced to shutdown: %v", err)
+	}
+
+	log.Println("Server exiting")
 }

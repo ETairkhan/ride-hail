@@ -8,10 +8,13 @@ import (
 	"github.com/rabbitmq/amqp091-go"
 )
 
+type RabbitMQ struct {
+	Conn *amqp091.Connection
+}
+
 // Инициализация соединения с RabbitMQ
 func InitRabbitMQ(config config.RabbitMQConfig) (*amqp091.Connection, error) {
 	// Формирование строки подключения с использованием данных из конфигурации
-	fmt.Println(config)
 	connStr := fmt.Sprintf("amqp://%s:%s@%s:%s/",
 		config.User, config.Password, config.Host, config.Port)
 

@@ -1,11 +1,11 @@
 FROM golang:1.24
 
-WORKDIR /cmd/ride-hail
+WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY . . 
+COPY . .
 
 RUN go build -o app ./cmd/ride-hail/main.go
 
