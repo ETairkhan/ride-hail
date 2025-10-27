@@ -52,11 +52,13 @@ services:
       retries: 5
     env_file:
       - .env
+    networks:  
+      - ridehail-network 
 
   # RabbitMQ
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: ridehail-rabbitmq
+    container_name: rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
@@ -71,6 +73,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+
 
   # migrate:
   #   container_name: migrate
