@@ -1,36 +1,36 @@
 services:
   # Go Application
-  app:
-    build: .
-    container_name: ridehail-app
-    ports:
-      - "${DRIVER_LOCATION_SERVICE_PORT}:${DRIVER_LOCATION_SERVICE_PORT}"
-      - "${WS_PORT}:${WS_PORT}"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - RABBITMQ_HOST=${RABBITMQ_HOST}
-      - RABBITMQ_PORT=${RABBITMQ_PORT}
-      - RABBITMQ_USER=${RABBITMQ_USER}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
-      - WS_PORT=${WS_PORT}
-      - DRIVER_LOCATION_SERVICE_PORT=${DRIVER_LOCATION_SERVICE_PORT}
-    networks:
-      - ridehail-network
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${DRIVER_LOCATION_SERVICE_PORT}/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+  # app:
+  #   build: .
+  #   container_name: ridehail-app
+  #   ports:
+  #     - "${DRIVER_LOCATION_SERVICE_PORT}:${DRIVER_LOCATION_SERVICE_PORT}"
+  #     - "${WS_PORT}:${WS_PORT}"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   environment:
+  #     - DB_HOST=${DB_HOST}
+  #     - DB_PORT=${DB_PORT}
+  #     - DB_USER=${DB_USER}
+  #     - DB_PASSWORD=${DB_PASSWORD}
+  #     - DB_NAME=${DB_NAME}
+  #     - RABBITMQ_HOST=${RABBITMQ_HOST}
+  #     - RABBITMQ_PORT=${RABBITMQ_PORT}
+  #     - RABBITMQ_USER=${RABBITMQ_USER}
+  #     - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+  #     - WS_PORT=${WS_PORT}
+  #     - DRIVER_LOCATION_SERVICE_PORT=${DRIVER_LOCATION_SERVICE_PORT}
+  #   networks:
+  #     - ridehail-network
+  #   healthcheck:
+  #     test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${DRIVER_LOCATION_SERVICE_PORT}/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 40s
 
   # PostgreSQL Database
   postgres:
@@ -69,6 +69,92 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+
+  # migrate:
+  #   container_name: migrate
+  #   image: migrate/migrate:v4.15.2
+  #   restart: on-failure
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./migrations/:/migrations
+  #   command: [
+  #     "-path", "/migrations/",
+  #     "-database",
+  #     "postgres://${POSTGRES_USER:-ridehail_user}:${POSTGRES_PASSWORD:-ridehail_pass}@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-ridehail_db}?sslmode=disable",
+  #     "up"
+  #   ]
+  #   env_file:
+  #     - .env
+
+
+  ride-service:
+    build:
+      context: .
+      dockerfile: ydocker/ride-service.Dockerfile
+    env_file: .env
+    volumes:
+      - ./logs/:/app/logs/
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      # migrate:
+      #   condition: service_completed_successfully
+    ports:
+      - "3000:${RIDE_HTTP_PORT:-3000}"
+    networks:  
+      - ridehail-network 
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: ydocker/auth-service.Dockerfile
+    env_file: .env
+    volumes:
+      - ./logs/:/app/logs/
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3010:${AUTH_SERVICE_PORT:-3010}"
+    networks:
+      - ridehail-network  
+  
+  admin-service:
+    build:
+      context: .
+      dockerfile: ydocker/admin-service.Dockerfile
+    env_file: .env
+    volumes:
+      - ./logs/:/app/logs/
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3004:${ADMIN_SERVICE_PORT:-3004}"
+    networks:  
+      - ridehail-network  
+
+  driver-location-service:
+    build:
+      context: .
+      dockerfile: ydocker/driver-location-service.Dockerfile
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "3001:${DRIVER_HTTP_PORT}"
+    networks:  
+      - ridehail-network 
 
 volumes:
   postgres_data:

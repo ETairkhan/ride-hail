@@ -1,0 +1,155 @@
+{"timestamp":"2025-10-27T10:54:07Z","level":"INFO","message":"Ride Hail System starting up","hostname":"06fe41ec9447","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T10:54:08Z","level":"INFO","message":"Ride Hail System starting up","hostname":"06fe41ec9447","request_id":"startup-002","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T10:54:08Z","level":"INFO","message":"Ride Hail System starting up","hostname":"06fe41ec9447","request_id":"startup-003","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T10:54:09Z","level":"INFO","message":"Ride Hail System starting up","hostname":"06fe41ec9447","request_id":"startup-004","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T10:54:10Z","level":"INFO","message":"Ride Hail System starting up","hostname":"06fe41ec9447","request_id":"startup-005","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T10:54:12Z","level":"INFO","message":"Ride Hail System starting up","hostname":"06fe41ec9447","request_id":"startup-006","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T10:54:16Z","level":"INFO","message":"Ride Hail System starting up","hostname":"06fe41ec9447","request_id":"startup-007","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:03:03Z","level":"INFO","message":"Ride Hail System starting up","hostname":"8e9c224e52b6","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:03:04Z","level":"INFO","message":"Ride Hail System starting up","hostname":"8e9c224e52b6","request_id":"startup-002","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:03:04Z","level":"INFO","message":"Ride Hail System starting up","hostname":"8e9c224e52b6","request_id":"startup-003","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:03:05Z","level":"INFO","message":"Ride Hail System starting up","hostname":"8e9c224e52b6","request_id":"startup-004","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:03:06Z","level":"INFO","message":"Ride Hail System starting up","hostname":"8e9c224e52b6","request_id":"startup-005","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:19:48Z","level":"INFO","message":"Ride Hail System starting up","hostname":"2dfb04ed1d32","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:19:48Z","level":"INFO","message":"Ride Service starting up","hostname":"2dfb04ed1d32","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:19:48Z","level":"INFO","message":"Ride Service started successfully","hostname":"2dfb04ed1d32","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:24:32Z","level":"INFO","message":"Received shutdown signal","hostname":"2dfb04ed1d32","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:24:32Z","level":"INFO","message":"Shutting down services...","hostname":"2dfb04ed1d32","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:24:32Z","level":"INFO","message":"Service exiting","hostname":"2dfb04ed1d32","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:25:04Z","level":"INFO","message":"Ride Hail System starting up","hostname":"0fc052fd7b1d","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:25:04Z","level":"INFO","message":"Ride Service starting up","hostname":"0fc052fd7b1d","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:25:04Z","level":"INFO","message":"Ride Service started successfully","hostname":"0fc052fd7b1d","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:25:49Z","level":"INFO","message":"Received shutdown signal","hostname":"0fc052fd7b1d","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:25:49Z","level":"INFO","message":"Shutting down services...","hostname":"0fc052fd7b1d","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:25:49Z","level":"INFO","message":"Service exiting","hostname":"0fc052fd7b1d","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:26:38Z","level":"INFO","message":"Ride Hail System starting up","hostname":"df20100c9a84","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:26:38Z","level":"INFO","message":"Ride Service starting up","hostname":"df20100c9a84","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:26:38Z","level":"INFO","message":"Ride Service started successfully","hostname":"df20100c9a84","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:27:31Z","level":"INFO","message":"Received shutdown signal","hostname":"df20100c9a84","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:27:31Z","level":"INFO","message":"Shutting down services...","hostname":"df20100c9a84","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:27:31Z","level":"INFO","message":"Service exiting","hostname":"df20100c9a84","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:28:03Z","level":"INFO","message":"Ride Hail System starting up","hostname":"7cb6487ad795","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:28:04Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4c891269f23a","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:28:04Z","level":"INFO","message":"Ride Service starting up","hostname":"4c891269f23a","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:28:04Z","level":"INFO","message":"Ride Service started successfully","hostname":"4c891269f23a","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:28:05Z","level":"INFO","message":"Ride Hail System starting up","hostname":"9506a3f9a99e","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:29:11Z","level":"INFO","message":"Received shutdown signal","hostname":"4c891269f23a","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:29:11Z","level":"INFO","message":"Shutting down services...","hostname":"4c891269f23a","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:29:11Z","level":"INFO","message":"Service exiting","hostname":"4c891269f23a","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:29:42Z","level":"INFO","message":"Ride Hail System starting up","hostname":"f246a4a638fc","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:29:42Z","level":"INFO","message":"Admin Service starting up","hostname":"f246a4a638fc","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-27T11:29:42Z","level":"INFO","message":"Admin Service started successfully","hostname":"f246a4a638fc","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-27T11:29:43Z","level":"INFO","message":"Ride Hail System starting up","hostname":"2e710065680b","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:29:43Z","level":"INFO","message":"Ride Service starting up","hostname":"2e710065680b","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:29:43Z","level":"INFO","message":"Ride Service started successfully","hostname":"2e710065680b","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:29:43Z","level":"INFO","message":"Ride Hail System starting up","hostname":"2c6c1ec2174c","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:29:43Z","level":"INFO","message":"Auth Service starting up","hostname":"2c6c1ec2174c","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-27T11:29:43Z","level":"INFO","message":"Auth functionality is included in ride-service","hostname":"2c6c1ec2174c","request_id":"startup-001","service":"auth-service","action":"auth_service_info"}
+{"timestamp":"2025-10-27T11:29:43Z","level":"INFO","message":"Service completed execution","hostname":"2c6c1ec2174c","request_id":"startup-001","action":"service_completed"}
+{"timestamp":"2025-10-27T11:29:43Z","level":"INFO","message":"Shutting down services...","hostname":"2c6c1ec2174c","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:29:43Z","level":"INFO","message":"Service exiting","hostname":"2c6c1ec2174c","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:30:29Z","level":"INFO","message":"Received shutdown signal","hostname":"f246a4a638fc","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:30:29Z","level":"INFO","message":"Shutting down services...","hostname":"f246a4a638fc","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:30:29Z","level":"INFO","message":"Service exiting","hostname":"f246a4a638fc","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:30:29Z","level":"INFO","message":"Received shutdown signal","hostname":"2e710065680b","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:30:29Z","level":"INFO","message":"Shutting down services...","hostname":"2e710065680b","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:30:29Z","level":"INFO","message":"Service exiting","hostname":"2e710065680b","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:31:01Z","level":"INFO","message":"Ride Hail System starting up","hostname":"25cccdfccd62","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:31:01Z","level":"INFO","message":"Admin Service starting up","hostname":"25cccdfccd62","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-27T11:31:01Z","level":"INFO","message":"Admin Service started successfully","hostname":"25cccdfccd62","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-27T11:31:02Z","level":"INFO","message":"Ride Hail System starting up","hostname":"60c33b59a8da","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:31:02Z","level":"INFO","message":"Ride Hail System starting up","hostname":"6b498f3095a7","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:31:02Z","level":"INFO","message":"Ride Service starting up","hostname":"60c33b59a8da","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:31:02Z","level":"INFO","message":"Ride Service started successfully","hostname":"60c33b59a8da","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:31:02Z","level":"INFO","message":"Auth Service starting up","hostname":"6b498f3095a7","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-27T11:31:02Z","level":"INFO","message":"Auth functionality is included in ride-service","hostname":"6b498f3095a7","request_id":"startup-001","service":"auth-service","action":"auth_service_info"}
+{"timestamp":"2025-10-27T11:31:02Z","level":"INFO","message":"Service completed execution","hostname":"6b498f3095a7","request_id":"startup-001","action":"service_completed"}
+{"timestamp":"2025-10-27T11:31:02Z","level":"INFO","message":"Shutting down services...","hostname":"6b498f3095a7","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:31:02Z","level":"INFO","message":"Service exiting","hostname":"6b498f3095a7","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:33:22Z","level":"INFO","message":"Received shutdown signal","hostname":"25cccdfccd62","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:33:22Z","level":"INFO","message":"Shutting down services...","hostname":"25cccdfccd62","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:33:22Z","level":"INFO","message":"Service exiting","hostname":"25cccdfccd62","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:33:22Z","level":"INFO","message":"Received shutdown signal","hostname":"60c33b59a8da","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:33:22Z","level":"INFO","message":"Shutting down services...","hostname":"60c33b59a8da","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:33:22Z","level":"INFO","message":"Service exiting","hostname":"60c33b59a8da","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Ride Hail System starting up","hostname":"317806c04ade","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Admin Service starting up","hostname":"317806c04ade","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Admin Service started successfully","hostname":"317806c04ade","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Ride Hail System starting up","hostname":"c5b977566966","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Auth Service starting up","hostname":"c5b977566966","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Auth functionality is included in ride-service","hostname":"c5b977566966","request_id":"startup-001","service":"auth-service","action":"auth_service_info"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Service completed execution","hostname":"c5b977566966","request_id":"startup-001","action":"service_completed"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Shutting down services...","hostname":"c5b977566966","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Service exiting","hostname":"c5b977566966","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Ride Hail System starting up","hostname":"b939d2dacdb0","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Ride Service starting up","hostname":"b939d2dacdb0","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:33:54Z","level":"INFO","message":"Ride Service started successfully","hostname":"b939d2dacdb0","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:42:37Z","level":"INFO","message":"Received shutdown signal","hostname":"b939d2dacdb0","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:42:37Z","level":"INFO","message":"Received shutdown signal","hostname":"317806c04ade","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:42:37Z","level":"INFO","message":"Shutting down services...","hostname":"317806c04ade","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:42:37Z","level":"INFO","message":"Shutting down services...","hostname":"b939d2dacdb0","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:42:37Z","level":"INFO","message":"Service exiting","hostname":"317806c04ade","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:42:37Z","level":"INFO","message":"Service exiting","hostname":"b939d2dacdb0","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:43:11Z","level":"INFO","message":"Ride Hail System starting up","hostname":"841fc549ba94","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:11Z","level":"INFO","message":"Ride Hail System starting up","hostname":"5a9ba393864d","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:12Z","level":"INFO","message":"Ride Hail System starting up","hostname":"841fc549ba94","request_id":"startup-002","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:12Z","level":"INFO","message":"Ride Hail System starting up","hostname":"5a9ba393864d","request_id":"startup-002","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:12Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dca061544ac9","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:13Z","level":"INFO","message":"Ride Hail System starting up","hostname":"841fc549ba94","request_id":"startup-003","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:13Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dca061544ac9","request_id":"startup-002","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:13Z","level":"INFO","message":"Ride Hail System starting up","hostname":"5a9ba393864d","request_id":"startup-003","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:14Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dca061544ac9","request_id":"startup-003","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:15Z","level":"INFO","message":"Ride Hail System starting up","hostname":"841fc549ba94","request_id":"startup-004","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:15Z","level":"INFO","message":"Ride Hail System starting up","hostname":"5a9ba393864d","request_id":"startup-004","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:15Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dca061544ac9","request_id":"startup-004","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:16Z","level":"INFO","message":"Ride Hail System starting up","hostname":"841fc549ba94","request_id":"startup-005","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:16Z","level":"INFO","message":"Ride Hail System starting up","hostname":"5a9ba393864d","request_id":"startup-005","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:17Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dca061544ac9","request_id":"startup-005","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:18Z","level":"INFO","message":"Ride Hail System starting up","hostname":"841fc549ba94","request_id":"startup-006","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:18Z","level":"INFO","message":"Ride Hail System starting up","hostname":"5a9ba393864d","request_id":"startup-006","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:19Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dca061544ac9","request_id":"startup-006","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:57Z","level":"INFO","message":"Ride Hail System starting up","hostname":"bd716fcd0bc3","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:57Z","level":"INFO","message":"Admin Service starting up","hostname":"bd716fcd0bc3","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-27T11:43:57Z","level":"INFO","message":"Admin Service started successfully","hostname":"bd716fcd0bc3","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-27T11:43:57Z","level":"INFO","message":"Ride Hail System starting up","hostname":"55e0821f51a1","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:57Z","level":"INFO","message":"Auth Service starting up","hostname":"55e0821f51a1","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-27T11:43:57Z","level":"INFO","message":"Auth functionality is included in ride-service","hostname":"55e0821f51a1","request_id":"startup-001","service":"auth-service","action":"auth_service_info"}
+{"timestamp":"2025-10-27T11:43:57Z","level":"INFO","message":"Service completed execution","hostname":"55e0821f51a1","request_id":"startup-001","action":"service_completed"}
+{"timestamp":"2025-10-27T11:43:57Z","level":"INFO","message":"Shutting down services...","hostname":"55e0821f51a1","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:43:57Z","level":"INFO","message":"Service exiting","hostname":"55e0821f51a1","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:43:58Z","level":"INFO","message":"Ride Hail System starting up","hostname":"7286d6a0f527","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:43:58Z","level":"INFO","message":"Ride Service starting up","hostname":"7286d6a0f527","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:43:58Z","level":"INFO","message":"Ride Service started successfully","hostname":"7286d6a0f527","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T11:56:21Z","level":"INFO","message":"Received shutdown signal","hostname":"bd716fcd0bc3","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:56:21Z","level":"INFO","message":"Shutting down services...","hostname":"bd716fcd0bc3","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:56:21Z","level":"INFO","message":"Service exiting","hostname":"bd716fcd0bc3","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:56:21Z","level":"INFO","message":"Received shutdown signal","hostname":"7286d6a0f527","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T11:56:21Z","level":"INFO","message":"Shutting down services...","hostname":"7286d6a0f527","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T11:56:21Z","level":"INFO","message":"Service exiting","hostname":"7286d6a0f527","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T11:57:23Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dae9c3bbb493","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:23Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4be144f522f2","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:24Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dae9c3bbb493","request_id":"startup-002","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:24Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4be144f522f2","request_id":"startup-002","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:25Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4be144f522f2","request_id":"startup-003","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:25Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dae9c3bbb493","request_id":"startup-003","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:26Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dae9c3bbb493","request_id":"startup-004","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:26Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4be144f522f2","request_id":"startup-004","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:27Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4be144f522f2","request_id":"startup-005","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:27Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dae9c3bbb493","request_id":"startup-005","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:29Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4e147f0be261","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:30Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dae9c3bbb493","request_id":"startup-006","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:30Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4be144f522f2","request_id":"startup-006","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:30Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4e147f0be261","request_id":"startup-002","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:31Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4e147f0be261","request_id":"startup-003","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:31Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4e147f0be261","request_id":"startup-004","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:33Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4e147f0be261","request_id":"startup-005","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:33Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4be144f522f2","request_id":"startup-007","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:33Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dae9c3bbb493","request_id":"startup-007","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:35Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4e147f0be261","request_id":"startup-006","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:38Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4e147f0be261","request_id":"startup-007","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:40Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4be144f522f2","request_id":"startup-008","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:40Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dae9c3bbb493","request_id":"startup-008","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:45Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4e147f0be261","request_id":"startup-008","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:54Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4be144f522f2","request_id":"startup-009","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:54Z","level":"INFO","message":"Ride Hail System starting up","hostname":"dae9c3bbb493","request_id":"startup-009","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T11:57:59Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4e147f0be261","request_id":"startup-009","action":"ride_hail_system_started"}
