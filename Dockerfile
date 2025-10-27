@@ -1,14 +1,14 @@
-FROM golang:1.24
+# FROM golang:1.24
 
-WORKDIR /app
+# WORKDIR /app
 
-COPY go.mod go.sum ./
-RUN go mod download
+# COPY go.mod go.sum ./
+# RUN go mod download
 
-COPY . .
+# COPY . .
 
-RUN go build -o app ./cmd/ride-hail/main.go
+# RUN go build -o app ./cmd/ride-hail/main.go
 
-EXPOSE 8080
+# EXPOSE 8080
 
-CMD ["./app"]
+# CMD ["./app"]

@@ -160,16 +160,16 @@ create index if not exists idx_drivers_vehicle_type on drivers(vehicle_type);
 create index if not exists idx_drivers_rating on drivers(rating);
 
 -- Enable PostGIS extension for geospatial queries
-create extension if not exists postgis;
+-- create extension if not exists postgis;
 
 -- Create spatial index for coordinates
-create index if not exists idx_coordinates_geom on coordinates using gist (
-    ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)
-    );
+-- create index if not exists idx_coordinates_geom on coordinates using gist (
+--     ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)
+--     );
 
--- Create indexes for location history
-create index if not exists idx_location_history_geom on location_history using gist (
-    ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)
-    );
+-- -- Create indexes for location history
+-- create index if not exists idx_location_history_geom on location_history using gist (
+--     ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)
+--     );
 
 commit;
