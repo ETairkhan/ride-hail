@@ -147,7 +147,7 @@ create table if not exists drivers (
     license_plate varchar(20) not null,
     vehicle_type text references "vehicle_type"(value) not null,
     status text references "driver_status"(value) not null default 'OFFLINE',
-    rating decimal(2,1) default 5.0 check (rating between 1 and 5),
+    rating decimal(2,1) default 5.0 check (rating between 0 and 5),
     total_rides integer default 0,
     total_earnings decimal(12,2) default 0,
     is_verified boolean default false,

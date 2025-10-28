@@ -57,13 +57,13 @@ func main() {
 	// parse mode
 	if err := fs.Parse(modeArgs); err != nil {
 		logger.Action("ride_hail_system_failed").Error("Failed to parse flags", err)
-		help(fs)
+		help()
 		return
 	}
 
 	if *mode == "" {
 		logger.Action("ride_hail_system_failed").Error("Failed to start ride hail system", ErrModeFlag)
-		help(fs)
+		help()
 		return
 	}
 
@@ -150,12 +150,15 @@ func main() {
 
 		// For now, auth is part of ride service
 		// You can separate it later if needed
-		l.Action("auth_service_info").Info("Auth functionality is included in ride-service")
-		done <- true
+		go func() {
+			app.AuthStartService(cfg, dbConnection)
+			done <- true
+		}()
+		l.Action("auth_service_started").Info("Auth Service started successfully")
 
 	default:
 		logger.Action("ride_hail_system_failed").Error("Failed to start ride hail system", ErrUnknownService)
-		help(fs)
+		help()
 		return
 	}
 
@@ -183,7 +186,7 @@ func main() {
 	logger.Action("service_exit").Info("Service exiting")
 }
 
-func help(fs *flag.FlagSet) {
+func help() {
 	fmt.Println("\n🚗 Ride Hail System - Usage:")
 	fmt.Println("  go run cmd/main.go --mode=<service>")
 	fmt.Println("\nAvailable Services:")

@@ -511,3 +511,115 @@
 {"timestamp":"2025-10-27T15:44:06Z","level":"INFO","message":"Received shutdown signal","hostname":"f126cae8f4ea","request_id":"startup-001","action":"service_shutdown"}
 {"timestamp":"2025-10-27T15:44:06Z","level":"INFO","message":"Shutting down services...","hostname":"f126cae8f4ea","request_id":"startup-001","action":"service_cleanup"}
 {"timestamp":"2025-10-27T15:44:06Z","level":"INFO","message":"Service exiting","hostname":"f126cae8f4ea","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Ride Hail System starting up","hostname":"5b3b19b763cf","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Ride Hail System starting up","hostname":"6fadb7ee8b6e","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Auth Service starting up","hostname":"5b3b19b763cf","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Auth functionality is included in ride-service","hostname":"5b3b19b763cf","request_id":"startup-001","service":"auth-service","action":"auth_service_info"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Service completed execution","hostname":"5b3b19b763cf","request_id":"startup-001","action":"service_completed"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Shutting down services...","hostname":"5b3b19b763cf","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Service exiting","hostname":"5b3b19b763cf","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Admin Service starting up","hostname":"6fadb7ee8b6e","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Admin Service started successfully","hostname":"6fadb7ee8b6e","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Ride Hail System starting up","hostname":"31e96c0ab68d","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Ride Service starting up","hostname":"31e96c0ab68d","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T18:59:13Z","level":"INFO","message":"Ride Service started successfully","hostname":"31e96c0ab68d","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-27T19:16:17Z","level":"INFO","message":"Received shutdown signal","hostname":"31e96c0ab68d","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T19:16:17Z","level":"INFO","message":"Shutting down services...","hostname":"31e96c0ab68d","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T19:16:17Z","level":"INFO","message":"Service exiting","hostname":"31e96c0ab68d","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-27T19:16:17Z","level":"INFO","message":"Received shutdown signal","hostname":"6fadb7ee8b6e","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-27T19:16:17Z","level":"INFO","message":"Shutting down services...","hostname":"6fadb7ee8b6e","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-27T19:16:17Z","level":"INFO","message":"Service exiting","hostname":"6fadb7ee8b6e","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T06:47:14Z","level":"INFO","message":"Ride Hail System starting up","hostname":"8575c83bebb5","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T06:47:14Z","level":"INFO","message":"Ride Hail System starting up","hostname":"d884138b6f45","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T06:47:14Z","level":"INFO","message":"Auth Service starting up","hostname":"d884138b6f45","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T06:47:14Z","level":"INFO","message":"Auth functionality is included in ride-service","hostname":"d884138b6f45","request_id":"startup-001","service":"auth-service","action":"auth_service_info"}
+{"timestamp":"2025-10-28T06:47:14Z","level":"INFO","message":"Admin Service starting up","hostname":"8575c83bebb5","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-28T06:47:14Z","level":"INFO","message":"Admin Service started successfully","hostname":"8575c83bebb5","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-28T06:47:14Z","level":"INFO","message":"Service completed execution","hostname":"d884138b6f45","request_id":"startup-001","action":"service_completed"}
+{"timestamp":"2025-10-28T06:47:14Z","level":"INFO","message":"Shutting down services...","hostname":"d884138b6f45","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T06:47:14Z","level":"INFO","message":"Service exiting","hostname":"d884138b6f45","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T06:47:33Z","level":"INFO","message":"Ride Hail System starting up","hostname":"97117e5c1a85","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T06:47:33Z","level":"INFO","message":"Ride Service starting up","hostname":"97117e5c1a85","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-28T06:47:33Z","level":"INFO","message":"Ride Service started successfully","hostname":"97117e5c1a85","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-28T06:51:16Z","level":"INFO","message":"Received shutdown signal","hostname":"8575c83bebb5","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T06:51:16Z","level":"INFO","message":"Shutting down services...","hostname":"8575c83bebb5","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T06:51:16Z","level":"INFO","message":"Received shutdown signal","hostname":"97117e5c1a85","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T06:51:16Z","level":"INFO","message":"Service exiting","hostname":"8575c83bebb5","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T06:51:16Z","level":"INFO","message":"Shutting down services...","hostname":"97117e5c1a85","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T06:51:16Z","level":"INFO","message":"Service exiting","hostname":"97117e5c1a85","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T07:26:33Z","level":"INFO","message":"Ride Hail System starting up","hostname":"e4a0efa23221","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T07:26:33Z","level":"INFO","message":"Admin Service starting up","hostname":"e4a0efa23221","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-28T07:26:33Z","level":"INFO","message":"Admin Service started successfully","hostname":"e4a0efa23221","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-28T07:26:33Z","level":"INFO","message":"Ride Hail System starting up","hostname":"7aa499208494","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T07:26:33Z","level":"INFO","message":"Auth Service starting up","hostname":"7aa499208494","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T07:26:33Z","level":"INFO","message":"Auth functionality is included in ride-service","hostname":"7aa499208494","request_id":"startup-001","service":"auth-service","action":"auth_service_info"}
+{"timestamp":"2025-10-28T07:26:33Z","level":"INFO","message":"Service completed execution","hostname":"7aa499208494","request_id":"startup-001","action":"service_completed"}
+{"timestamp":"2025-10-28T07:26:33Z","level":"INFO","message":"Shutting down services...","hostname":"7aa499208494","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T07:26:33Z","level":"INFO","message":"Service exiting","hostname":"7aa499208494","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T07:26:41Z","level":"INFO","message":"Ride Hail System starting up","hostname":"94f18c43f212","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T07:26:41Z","level":"INFO","message":"Ride Service starting up","hostname":"94f18c43f212","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-28T07:26:41Z","level":"INFO","message":"Ride Service started successfully","hostname":"94f18c43f212","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-28T07:34:41Z","level":"INFO","message":"Received shutdown signal","hostname":"e4a0efa23221","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T07:34:41Z","level":"INFO","message":"Received shutdown signal","hostname":"94f18c43f212","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T07:34:41Z","level":"INFO","message":"Shutting down services...","hostname":"e4a0efa23221","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T07:34:41Z","level":"INFO","message":"Service exiting","hostname":"e4a0efa23221","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T07:34:41Z","level":"INFO","message":"Shutting down services...","hostname":"94f18c43f212","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T07:34:41Z","level":"INFO","message":"Service exiting","hostname":"94f18c43f212","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T07:36:15Z","level":"INFO","message":"Ride Hail System starting up","hostname":"4346b09ae101","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T07:36:15Z","level":"INFO","message":"Auth Service starting up","hostname":"4346b09ae101","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T07:36:15Z","level":"INFO","message":"Auth functionality is included in ride-service","hostname":"4346b09ae101","request_id":"startup-001","service":"auth-service","action":"auth_service_info"}
+{"timestamp":"2025-10-28T07:36:15Z","level":"INFO","message":"Service completed execution","hostname":"4346b09ae101","request_id":"startup-001","action":"service_completed"}
+{"timestamp":"2025-10-28T07:36:15Z","level":"INFO","message":"Shutting down services...","hostname":"4346b09ae101","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T07:36:15Z","level":"INFO","message":"Service exiting","hostname":"4346b09ae101","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T07:37:59Z","level":"INFO","message":"Ride Hail System starting up","hostname":"479bfa9ad033","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T07:37:59Z","level":"INFO","message":"Auth Service starting up","hostname":"479bfa9ad033","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T07:37:59Z","level":"INFO","message":"Auth functionality is included in ride-service","hostname":"479bfa9ad033","request_id":"startup-001","service":"auth-service","action":"auth_service_info"}
+{"timestamp":"2025-10-28T07:37:59Z","level":"INFO","message":"Service completed execution","hostname":"479bfa9ad033","request_id":"startup-001","action":"service_completed"}
+{"timestamp":"2025-10-28T07:37:59Z","level":"INFO","message":"Shutting down services...","hostname":"479bfa9ad033","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T07:37:59Z","level":"INFO","message":"Service exiting","hostname":"479bfa9ad033","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T07:45:46Z","level":"INFO","message":"Ride Hail System starting up","hostname":"0ee644e9c3ed","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T07:45:46Z","level":"INFO","message":"Auth Service starting up","hostname":"0ee644e9c3ed","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T07:47:07Z","level":"INFO","message":"Received shutdown signal","hostname":"0ee644e9c3ed","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T07:47:07Z","level":"INFO","message":"Shutting down services...","hostname":"0ee644e9c3ed","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T07:47:07Z","level":"INFO","message":"Service exiting","hostname":"0ee644e9c3ed","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T07:47:10Z","level":"INFO","message":"Ride Hail System starting up","hostname":"255bae69a618","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T07:47:10Z","level":"INFO","message":"Auth Service starting up","hostname":"255bae69a618","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T08:26:37Z","level":"INFO","message":"Received shutdown signal","hostname":"255bae69a618","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T08:26:37Z","level":"INFO","message":"Shutting down services...","hostname":"255bae69a618","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T08:26:37Z","level":"INFO","message":"Service exiting","hostname":"255bae69a618","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T08:28:24Z","level":"INFO","message":"Ride Hail System starting up","hostname":"5aefb8728af8","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T08:28:24Z","level":"INFO","message":"Auth Service starting up","hostname":"5aefb8728af8","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T08:28:24Z","level":"INFO","message":"Auth Service started successfully","hostname":"5aefb8728af8","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T09:07:27Z","level":"INFO","message":"Received shutdown signal","hostname":"5aefb8728af8","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T09:07:27Z","level":"INFO","message":"Shutting down services...","hostname":"5aefb8728af8","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T09:07:27Z","level":"INFO","message":"Service exiting","hostname":"5aefb8728af8","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T09:09:41Z","level":"INFO","message":"Ride Hail System starting up","hostname":"3d3324ae841e","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T09:09:41Z","level":"INFO","message":"Auth Service starting up","hostname":"3d3324ae841e","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T09:09:41Z","level":"INFO","message":"Auth Service started successfully","hostname":"3d3324ae841e","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T09:11:07Z","level":"INFO","message":"Received shutdown signal","hostname":"3d3324ae841e","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T09:11:07Z","level":"INFO","message":"Shutting down services...","hostname":"3d3324ae841e","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T09:11:07Z","level":"INFO","message":"Service exiting","hostname":"3d3324ae841e","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T09:12:06Z","level":"INFO","message":"Ride Hail System starting up","hostname":"c150ccdf56fb","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T09:12:06Z","level":"INFO","message":"Auth Service starting up","hostname":"c150ccdf56fb","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T09:12:06Z","level":"INFO","message":"Auth Service started successfully","hostname":"c150ccdf56fb","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T09:12:20Z","level":"INFO","message":"Received shutdown signal","hostname":"c150ccdf56fb","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T09:12:20Z","level":"INFO","message":"Shutting down services...","hostname":"c150ccdf56fb","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T09:12:20Z","level":"INFO","message":"Service exiting","hostname":"c150ccdf56fb","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T09:15:16Z","level":"INFO","message":"Ride Hail System starting up","hostname":"5a735988acc4","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T09:15:16Z","level":"INFO","message":"Ride Hail System starting up","hostname":"af477765e31b","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T09:15:16Z","level":"INFO","message":"Auth Service starting up","hostname":"5a735988acc4","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T09:15:16Z","level":"INFO","message":"Auth Service started successfully","hostname":"5a735988acc4","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T09:15:16Z","level":"INFO","message":"Admin Service starting up","hostname":"af477765e31b","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-28T09:15:16Z","level":"INFO","message":"Admin Service started successfully","hostname":"af477765e31b","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-28T09:15:22Z","level":"INFO","message":"Ride Hail System starting up","hostname":"ddb674f45368","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T09:15:22Z","level":"INFO","message":"Ride Service starting up","hostname":"ddb674f45368","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-28T09:15:22Z","level":"INFO","message":"Ride Service started successfully","hostname":"ddb674f45368","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Received shutdown signal","hostname":"af477765e31b","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Received shutdown signal","hostname":"ddb674f45368","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Shutting down services...","hostname":"af477765e31b","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Shutting down services...","hostname":"ddb674f45368","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Service exiting","hostname":"af477765e31b","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Service exiting","hostname":"ddb674f45368","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Received shutdown signal","hostname":"5a735988acc4","request_id":"startup-001","action":"service_shutdown"}
+{"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Shutting down services...","hostname":"5a735988acc4","request_id":"startup-001","action":"service_cleanup"}
+{"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Service exiting","hostname":"5a735988acc4","request_id":"startup-001","action":"service_exit"}
