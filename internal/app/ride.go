@@ -32,9 +32,17 @@ func (p *RabbitMQPublisher) PublishRideRequest(ctx context.Context, ride *models
 	}
 	defer ch.Close()
 
+	// Ensure vehicle type is properly converted to string
+	vehicleType := string(ride.VehicleType)
+	if vehicleType == "" {
+		vehicleType = "ECONOMY" // default fallback
+	}
+
 	message := map[string]interface{}{
-		"ride_id":     ride.ID,
-		"ride_number": ride.RideNumber,
+		"ride_id":      ride.ID,
+		"ride_number":  ride.RideNumber,
+		"passenger_id": ride.PassengerID, // Add passenger_id
+		"vehicle_type": vehicleType,      // Use string version
 		"pickup_location": map[string]interface{}{
 			"lat":     pickupCoords.Latitude,
 			"lng":     pickupCoords.Longitude,
@@ -45,7 +53,6 @@ func (p *RabbitMQPublisher) PublishRideRequest(ctx context.Context, ride *models
 			"lng":     destCoords.Longitude,
 			"address": destCoords.Address,
 		},
-		"ride_type":       ride.VehicleType,
 		"estimated_fare":  ride.EstimatedFare,
 		"max_distance_km": 5.0,
 		"timeout_seconds": 30,
@@ -56,7 +63,7 @@ func (p *RabbitMQPublisher) PublishRideRequest(ctx context.Context, ride *models
 		return fmt.Errorf("failed to marshal message: %w", err)
 	}
 
-	routingKey := fmt.Sprintf("ride.request.%s", ride.VehicleType)
+	routingKey := fmt.Sprintf("ride.request.%s", vehicleType)
 
 	err = ch.Publish(
 		"ride_topic", // exchange
@@ -73,6 +80,7 @@ func (p *RabbitMQPublisher) PublishRideRequest(ctx context.Context, ride *models
 		return fmt.Errorf("failed to publish message: %w", err)
 	}
 
+	log.Printf("Published ride request %s with vehicle type: %s", ride.ID, vehicleType)
 	return nil
 }
 
