@@ -41,6 +41,7 @@ type ServicesConfig struct {
 	RideServicePort           string
 	DriverLocationServicePort string
 	AdminServicePort          string
+	AuthServicePort           string
 }
 
 // Загрузка конфигурации из переменных окружения
@@ -68,6 +69,7 @@ func LoadConfig() Config {
 		RideServicePort:           getEnv("RIDE_SERVICE_PORT", defaultValues["RIDE_SERVICE_PORT"]),
 		DriverLocationServicePort: getEnv("DRIVER_LOCATION_SERVICE_PORT", defaultValues["DRIVER_LOCATION_SERVICE_PORT"]),
 		AdminServicePort:          getEnv("ADMIN_SERVICE_PORT", defaultValues["ADMIN_SERVICE_PORT"]),
+		AuthServicePort:           getEnv("AUTH_SERVICE_PORT", defaultValues["AUTH_SERVICE_PORT"]),
 	}
 	return Config{
 		DBConfig:        dbConfig,

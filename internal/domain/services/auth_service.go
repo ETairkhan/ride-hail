@@ -17,20 +17,31 @@ import (
 
 type AuthService interface {
 	Register(ctx context.Context, req *models.RegisterRequest) (*models.AuthResponse, error)
+	RegisterDriver(ctx context.Context, req *models.DriverRegisterRequest) (*models.AuthResponse, error)
 	Login(ctx context.Context, req *models.AuthRequest) (*models.AuthResponse, error)
 	ValidateToken(tokenString string) (*models.User, error)
 	GetUserProfile(ctx context.Context, userID string) (*models.UserResponse, error)
 }
 
 type authService struct {
-	authRepo repo.AuthRepository
-	config   config.Config
+	authRepo   repo.AuthRepository
+	driverRepo repo.DriverRepository
+	config     config.Config
 }
 
 func NewAuthService(authRepo repo.AuthRepository, config config.Config) AuthService {
 	return &authService{
-		authRepo: authRepo,
-		config:   config,
+		authRepo:   authRepo,
+		driverRepo: nil, // Will be set if driverRepo is provided
+		config:     config,
+	}
+}
+
+func NewAuthServiceWithDriver(authRepo repo.AuthRepository, driverRepo repo.DriverRepository, config config.Config) AuthService {
+	return &authService{
+		authRepo:   authRepo,
+		driverRepo: driverRepo,
+		config:     config,
 	}
 }
 
@@ -74,6 +85,80 @@ func (s *authService) Register(ctx context.Context, req *models.RegisterRequest)
 
 	if err := s.authRepo.CreateUser(ctx, user); err != nil {
 		return nil, fmt.Errorf("failed to create user: %w", err)
+	}
+
+	// Generate JWT token
+	token, err := s.generateToken(user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate token: %w", err)
+	}
+
+	return &models.AuthResponse{
+		Token: token,
+		User: models.UserResponse{
+			ID:        user.ID,
+			Email:     user.Email,
+			Role:      user.Role,
+			Status:    user.Status,
+			Name:      user.Name,
+			Phone:     user.Phone,
+			CreatedAt: time.Now(),
+		},
+	}, nil
+}
+
+func (s *authService) RegisterDriver(ctx context.Context, req *models.DriverRegisterRequest) (*models.AuthResponse, error) {
+	// Check if driverRepo is available
+	if s.driverRepo == nil {
+		return nil, errors.New("driver repository not available")
+	}
+
+	// Check if user already exists
+	existingUser, err := s.authRepo.GetUserByEmail(ctx, req.Email)
+	if err == nil && existingUser != nil {
+		return nil, errors.New("user already exists with this email")
+	}
+
+	// Check if license number already exists
+	_, err = s.driverRepo.GetDriverByLicenseNumber(ctx, req.LicenseNumber)
+	if err == nil {
+		return nil, errors.New("driver with this license number already exists")
+	}
+
+	// Hash password
+	hashedPassword := s.hashPassword(req.Password)
+
+	// Create user with DRIVER role
+	user := &models.User{
+		ID:           uuid.GenerateUUID(),
+		Email:        req.Email,
+		Role:         models.RoleDriver,
+		Status:       models.StatusActive,
+		PasswordHash: hashedPassword,
+		Name:         req.Name,
+		Phone:        req.Phone,
+	}
+
+	// Create user in database
+	if err := s.authRepo.CreateUser(ctx, user); err != nil {
+		return nil, fmt.Errorf("failed to create user: %w", err)
+	}
+
+	// Create driver record
+	driver := &models.Driver{
+		ID:            user.ID,
+		LicenseNumber: req.LicenseNumber,
+		VehicleMake:   req.VehicleMake,
+		VehicleModel:  req.VehicleModel,
+		VehicleYear:   req.VehicleYear,
+		VehicleColor:  req.VehicleColor,
+		LicensePlate:  req.LicensePlate,
+		VehicleType:   req.VehicleType,
+	}
+
+	if err := s.driverRepo.CreateDriver(ctx, driver); err != nil {
+		// Note: In production, implement proper transaction rollback
+		return nil, fmt.Errorf("failed to create driver: %w", err)
 	}
 
 	// Generate JWT token

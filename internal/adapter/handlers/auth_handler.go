@@ -19,8 +19,12 @@ func NewAuthHandler(authService services.AuthService) *AuthHandler {
 }
 
 func (h *AuthHandler) SetupRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("POST /auth/register", h.Register)
-	mux.HandleFunc("POST /auth/login", h.Login)
+
+	mux.HandleFunc("POST /user/register", h.Register)
+	mux.HandleFunc("POST /user/login", h.Login)
+
+	mux.HandleFunc("POST /driver/register", h.RegisterDriver)
+	mux.HandleFunc("POST /driver/login", h.Login)
 }
 
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
@@ -49,6 +53,55 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	response, err := h.authService.Register(r.Context(), &req)
 	if err != nil {
 		log.Printf("Registration failed: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
+}
+
+func (h *AuthHandler) RegisterDriver(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req models.DriverRegisterRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, fmt.Sprintf("Invalid request body: %v", err), http.StatusBadRequest)
+		return
+	}
+
+	// Validate required fields
+	if req.Email == "" || req.Password == "" {
+		http.Error(w, "Email and password are required", http.StatusBadRequest)
+		return
+	}
+
+	if len(req.Password) < 6 {
+		http.Error(w, "Password must be at least 6 characters", http.StatusBadRequest)
+		return
+	}
+
+	// Validate driver-specific fields
+	if req.LicenseNumber == "" || req.VehicleMake == "" || req.VehicleModel == "" ||
+		req.LicensePlate == "" || req.VehicleType == "" {
+		http.Error(w, "License number, vehicle details, and vehicle type are required", http.StatusBadRequest)
+		return
+	}
+
+	if req.VehicleYear < 1900 || req.VehicleYear > 2030 {
+		http.Error(w, "Invalid vehicle year", http.StatusBadRequest)
+		return
+	}
+
+	response, err := h.authService.RegisterDriver(r.Context(), &req)
+	if err != nil {
+		log.Printf("Driver registration failed: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
