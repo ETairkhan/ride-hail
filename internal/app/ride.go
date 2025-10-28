@@ -3,7 +3,6 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"ride-hail/internal/adapter/handlers"
