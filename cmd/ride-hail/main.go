@@ -77,16 +77,23 @@ func main() {
 	defer dbConnection.Close(ctx)
 
 	// Initialize RabbitMQ with retry logic
+	
+	// Initialize RabbitMQ connection
 	var rabbitConn *amqp091.Connection
-	rabbitConn, err = rabbitmq.InitRabbitMQ(cfg.RabbitMQConfig)
-	if err != nil {
-		log.Printf("Warning: Failed to connect to RabbitMQ: %v", err)
-		log.Println("Application will start without RabbitMQ functionality")
-		rabbitConn = nil
-	} else {
-		defer rabbitConn.Close()
+	if cfg.RabbitMQConfig.Enabled {
+		rabbitConn, err = rabbitmq.InitRabbitMQ(cfg.RabbitMQConfig)
+		if err != nil {
+			log.Printf("Warning: Failed to connect to RabbitMQ: %v", err)
+			// Continue without RabbitMQ for development
+		} else {
+			defer rabbitConn.Close()
+			
+			// Setup exchanges and queues
+			if err := rabbitmq.SetupExchangesAndQueues(rabbitConn); err != nil {
+				log.Printf("Warning: Failed to setup RabbitMQ exchanges and queues: %v", err)
+			}
+		}
 	}
-
 	// Create a channel to wait for server shutdown
 	done := make(chan bool, 1)
 

@@ -1,12 +1,13 @@
+// app/ride.go
 package app
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"ride-hail/internal/adapter/handlers"
+	"ride-hail/internal/adapter/rabbitmq"
 	"ride-hail/internal/common/config"
 	"ride-hail/internal/common/middleware"
 	"ride-hail/internal/domain/models"
@@ -18,62 +19,16 @@ import (
 )
 
 type RabbitMQPublisher struct {
-	conn *amqp091.Connection
+	rabbitMQ *rabbitmq.RabbitMQ
 }
 
-func NewRabbitMQPublisher(conn *amqp091.Connection) *RabbitMQPublisher {
-	return &RabbitMQPublisher{conn: conn}
+func NewRabbitMQPublisher(rabbitMQ *rabbitmq.RabbitMQ) *RabbitMQPublisher {
+	return &RabbitMQPublisher{rabbitMQ: rabbitMQ}
 }
 
 func (p *RabbitMQPublisher) PublishRideRequest(ctx context.Context, ride *models.Ride, pickupCoords, destCoords *models.Coordinates) error {
-	ch, err := p.conn.Channel()
-	if err != nil {
-		return fmt.Errorf("failed to open channel: %w", err)
-	}
-	defer ch.Close()
-
-	message := map[string]interface{}{
-		"ride_id":     ride.ID,
-		"ride_number": ride.RideNumber,
-		"pickup_location": map[string]interface{}{
-			"lat":     pickupCoords.Latitude,
-			"lng":     pickupCoords.Longitude,
-			"address": pickupCoords.Address,
-		},
-		"destination_location": map[string]interface{}{
-			"lat":     destCoords.Latitude,
-			"lng":     destCoords.Longitude,
-			"address": destCoords.Address,
-		},
-		"ride_type":       ride.VehicleType,
-		"estimated_fare":  ride.EstimatedFare,
-		"max_distance_km": 5.0,
-		"timeout_seconds": 30,
-	}
-
-	messageBody, err := json.Marshal(message)
-	if err != nil {
-		return fmt.Errorf("failed to marshal message: %w", err)
-	}
-
-	routingKey := fmt.Sprintf("ride.request.%s", ride.VehicleType)
-
-	err = ch.Publish(
-		"ride_topic", // exchange
-		routingKey,   // routing key
-		false,        // mandatory
-		false,        // immediate
-		amqp091.Publishing{
-			ContentType: "application/json",
-			Body:        messageBody,
-		},
-	)
-
-	if err != nil {
-		return fmt.Errorf("failed to publish message: %w", err)
-	}
-
-	return nil
+	// Use the centralized RabbitMQ function
+	return rabbitmq.PublishRideRequest(p.rabbitMQ.Conn, ride, pickupCoords, destCoords)
 }
 
 func RideStartService(config config.Config, dbConn *pgx.Conn, rabbitConn *amqp091.Connection) {
@@ -82,9 +37,18 @@ func RideStartService(config config.Config, dbConn *pgx.Conn, rabbitConn *amqp09
 	driverRepo := repo.NewDriverRepository(dbConn)
 	rideRepo := repo.NewRideRepository(dbConn)
 
-	// Initialize services
+	// Initialize services - create RabbitMQ wrapper
+	var publisher services.MessagePublisher
+	if rabbitConn != nil {
+		rabbitMQ := &rabbitmq.RabbitMQ{Conn: rabbitConn}
+		publisher = NewRabbitMQPublisher(rabbitMQ)
+	} else {
+		log.Println("RabbitMQ not available - using mock publisher")
+		publisher = &mockPublisher{}
+	}
+
 	authService := services.NewAuthServiceWithDriver(authRepo, driverRepo, config)
-	rideService := services.NewRideService(rideRepo, authRepo, NewRabbitMQPublisher(rabbitConn))
+	rideService := services.NewRideService(rideRepo, authRepo, publisher)
 
 	// Initialize handlers
 	authHandler := handlers.NewAuthHandler(authService)
@@ -108,4 +72,12 @@ func RideStartService(config config.Config, dbConn *pgx.Conn, rabbitConn *amqp09
 	if err != nil {
 		log.Fatalf("Error starting Ride Service: %v", err)
 	}
+}
+
+// Mock publisher for when RabbitMQ is not available
+type mockPublisher struct{}
+
+func (m *mockPublisher) PublishRideRequest(ctx context.Context, ride *models.Ride, pickupCoords, destCoords *models.Coordinates) error {
+	log.Printf("Mock: Would publish ride request for ride %s", ride.ID)
+	return nil
 }

@@ -31,6 +31,7 @@ type RabbitMQConfig struct {
 	Port     string
 	User     string
 	Password string
+	Enabled  bool 
 }
 
 type WebSocketConfig struct {
@@ -61,6 +62,7 @@ func LoadConfig() Config {
 		Port:     getEnv("RABBITMQ_PORT", defaultValues["RABBITMQ_PORT"]),
 		User:     getEnv("RABBITMQ_USER", defaultValues["RABBITMQ_USER"]),
 		Password: getEnv("RABBITMQ_PASSWORD", defaultValues["RABBITMQ_PASSWORD"]),
+		Enabled:   getEnvAsBool("DB_ENABLED", defaultValues["true"]),
 	}
 	webSocketConfig := WebSocketConfig{
 		Port: getEnv("WS_PORT", defaultValues["WS_PORT"]),
@@ -126,4 +128,26 @@ func GetDefaultValue() map[string]string {
 	}
 
 	return defaultValues
+}
+
+func getEnvAsBool(key, defaultValue string) bool {
+	value := os.Getenv(key)
+	if value == "" {
+		value = defaultValue
+	}
+	
+	boolValue, err := strconv.ParseBool(value)
+	if err != nil {
+		// If parsing fails, try to interpret common strings
+		switch strings.ToLower(value) {
+		case "yes", "true", "1", "on":
+			return true
+		case "no", "false", "0", "off":
+			return false
+		default:
+			// Default to true for enabled services
+			return true
+		}
+	}
+	return boolValue
 }
