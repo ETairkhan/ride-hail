@@ -623,3 +623,12 @@
 {"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Received shutdown signal","hostname":"5a735988acc4","request_id":"startup-001","action":"service_shutdown"}
 {"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Shutting down services...","hostname":"5a735988acc4","request_id":"startup-001","action":"service_cleanup"}
 {"timestamp":"2025-10-28T09:15:53Z","level":"INFO","message":"Service exiting","hostname":"5a735988acc4","request_id":"startup-001","action":"service_exit"}
+{"timestamp":"2025-10-28T11:16:33Z","level":"INFO","message":"Ride Hail System starting up","hostname":"fd3fe55c3593","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T11:16:33Z","level":"INFO","message":"Ride Hail System starting up","hostname":"51de42ff061b","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T11:16:33Z","level":"INFO","message":"Admin Service starting up","hostname":"fd3fe55c3593","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-28T11:16:33Z","level":"INFO","message":"Admin Service started successfully","hostname":"fd3fe55c3593","request_id":"startup-001","service":"admin-service","action":"admin_service_started"}
+{"timestamp":"2025-10-28T11:16:33Z","level":"INFO","message":"Auth Service starting up","hostname":"51de42ff061b","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T11:16:33Z","level":"INFO","message":"Auth Service started successfully","hostname":"51de42ff061b","request_id":"startup-001","service":"auth-service","action":"auth_service_started"}
+{"timestamp":"2025-10-28T11:16:38Z","level":"INFO","message":"Ride Hail System starting up","hostname":"acd20787f849","request_id":"startup-001","action":"ride_hail_system_started"}
+{"timestamp":"2025-10-28T11:16:39Z","level":"INFO","message":"Ride Service starting up","hostname":"acd20787f849","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
+{"timestamp":"2025-10-28T11:16:39Z","level":"INFO","message":"Ride Service started successfully","hostname":"acd20787f849","request_id":"startup-001","service":"ride-service","action":"ride_service_started"}
