@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"ride-hail/internal/config"
-	ports "ride-hail/internal/driver-location-service/core/ports/serv"
+	ports "ride-hail/internal/driver-location-service/core/ports/driven"
 	"ride-hail/internal/mylogger"
 
 	amqp "github.com/rabbitmq/amqp091-go"
