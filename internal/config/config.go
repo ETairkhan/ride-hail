@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	// "gopkg.in/yaml.v3"
 )
 
 type Config struct {
@@ -111,3 +112,16 @@ func New() (*Config, error) {
 	return cnf, nil
 }
 
+// func NewFromYAML(path string) (*Config, error) {
+// 	data, err := os.ReadFile(path)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	cnf := &Config{}
+// 	if err := yaml.Unmarshal(data, cnf); err != nil {
+// 		return nil, err
+// 	}
+
+// 	return cnf, nil
+// }
