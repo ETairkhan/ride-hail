@@ -3,6 +3,7 @@ package app
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"net/http"
 	"ride-hail/internal/adapter/handlers"
@@ -64,6 +65,12 @@ func RideStartService(config config.Config, dbConn *pgx.Conn, rabbitConn *amqp09
 	mux.Handle("GET /auth/profile", authMiddleware.Wrap(http.HandlerFunc(authHandler.GetProfile)))
 	mux.Handle("POST /rides", authMiddleware.Wrap(http.HandlerFunc(rideHandler.CreateRide)))
 	mux.Handle("POST /rides/{ride_id}/cancel", authMiddleware.Wrap(http.HandlerFunc(rideHandler.CancelRide)))
+
+	// Health check endpoint
+	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{"status": "healthy", "service": "auth"})
+	})
 
 	// Start server
 	log.Printf("Starting Ride Service on port %s", config.ServicesConfig.RideServicePort)
