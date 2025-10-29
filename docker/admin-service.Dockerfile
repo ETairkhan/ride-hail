@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN go build -o main ./cmd/app/main.go
+RUN go build -o main ./cmd/ridehail/main.go
 
 EXPOSE 3000
 
