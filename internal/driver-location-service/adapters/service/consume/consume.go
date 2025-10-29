@@ -13,7 +13,7 @@ import (
 	"ride-hail/internal/mylogger"
 
 	bm "ride-hail/internal/driver-location-service/adapters/service/rabbitmq"
-	"ride-hail/internal/driver-location-service/core/ports/driven"
+	"ride-hail/internal/driver-location-service/core/ports/service"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -31,7 +31,7 @@ const (
 type MatchingConsumer struct {
 	cfg    *config.Config
 	log    mylogger.Logger
-	broker driven.IDriverBroker
+	broker service.IDriverBroker
 
 	ctx    context.Context
 	appCtx context.Context
@@ -70,7 +70,7 @@ func (c *MatchingConsumer) Run() error {
 		c.appCtx,
 		driverMatchingQ,
 		rideRequestBind,
-		driven.ConsumeOptions{Prefetch: defaultPrefetch, AutoAck: false, QueueDurable: true},
+		service.ConsumeOptions{Prefetch: defaultPrefetch, AutoAck: false, QueueDurable: true},
 	)
 	if err != nil {
 		return fmt.Errorf("consume driver_matching: %w", err)

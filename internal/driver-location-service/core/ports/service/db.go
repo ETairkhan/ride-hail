@@ -1,4 +1,4 @@
-package driven
+package service
 
 import (
 	"context"

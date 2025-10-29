@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"ride-hail/internal/auth-service/core/domain/dto"
+	"ride-hail/internal/auth-service/core/domain/data"
 	"ride-hail/internal/auth-service/core/service"
 	"ride-hail/internal/mylogger"
 	"time"
@@ -31,7 +31,7 @@ var (
 
 func (ah *AuthHandler) Register() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var regReq dto.UserRegistrationRequest
+		var regReq data.UserRegistrationRequest
 
 		mylog := ah.mylog.Action("Register")
 
@@ -66,7 +66,7 @@ func (ah *AuthHandler) Register() http.HandlerFunc {
 
 func (ah *AuthHandler) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var authReq dto.UserAuthRequest
+		var authReq data.UserAuthRequest
 
 		mylog := ah.mylog.Action("Register")
 

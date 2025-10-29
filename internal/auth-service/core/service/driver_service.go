@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"ride-hail/internal/auth-service/core/domain/dto"
+	"ride-hail/internal/auth-service/core/domain/data"
 	"ride-hail/internal/auth-service/core/domain/models"
 	"ride-hail/internal/auth-service/core/ports"
 	"ride-hail/internal/config"
@@ -36,7 +36,7 @@ func NewDriverService(
 }
 
 // ======================= Register =======================
-func (ds *DriverService) Register(ctx context.Context, regReq dto.DriverRegistrationRequest) (string, string, error) {
+func (ds *DriverService) Register(ctx context.Context, regReq data.DriverRegistrationRequest) (string, string, error) {
 	mylog := ds.mylog.Action("Register")
 
 	if err := validateRegistration(ctx, regReq.Username, regReq.Email, regReq.Password); err != nil {
@@ -91,7 +91,7 @@ func (ds *DriverService) Register(ctx context.Context, regReq dto.DriverRegistra
 	return id, accessTokenString, nil
 }
 
-func (ds *DriverService) Login(ctx context.Context, authReq dto.DriverRegistrationRequest) (string, error) {
+func (ds *DriverService) Login(ctx context.Context, authReq data.DriverRegistrationRequest) (string, error) {
 	mylog := ds.mylog.Action("Login")
 
 	if err := validateLogin(ctx, authReq.Email, authReq.Password); err != nil {
@@ -131,10 +131,10 @@ func (ds *DriverService) Login(ctx context.Context, authReq dto.DriverRegistrati
 	return accesssTokenString, nil
 }
 
-func (ds *DriverService) Logout(ctx context.Context, auth dto.DriverAuthRequest) error {
+func (ds *DriverService) Logout(ctx context.Context, auth data.DriverAuthRequest) error {
 	return nil
 }
 
-func (ds *DriverService) Protected(ctx context.Context, auth dto.DriverAuthRequest) error {
+func (ds *DriverService) Protected(ctx context.Context, auth data.DriverAuthRequest) error {
 	return nil
 }

@@ -1,4 +1,4 @@
-package myhttp
+package operator
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"ride-hail/internal/auth-service/adapters/driven/db"
-	"ride-hail/internal/auth-service/adapters/driver/myhttp/handle"
-	"ride-hail/internal/auth-service/adapters/driver/myhttp/middleware"
+	"ride-hail/internal/auth-service/adapters/operator/handle"
+	"ride-hail/internal/auth-service/adapters/operator/middleware"
+	"ride-hail/internal/auth-service/adapters/service/db"
 	"ride-hail/internal/auth-service/core/service"
 	"ride-hail/internal/config"
 	"ride-hail/internal/mylogger"

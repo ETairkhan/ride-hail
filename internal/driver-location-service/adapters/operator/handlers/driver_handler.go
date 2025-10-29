@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 	"ride-hail/internal/driver-location-service/core/domain/data"
-	"ride-hail/internal/driver-location-service/core/ports/driver"
+	"ride-hail/internal/driver-location-service/core/ports/operator"
 	"ride-hail/internal/mylogger"
 
 	"github.com/gorilla/websocket"
@@ -19,12 +19,12 @@ var upgrader = websocket.Upgrader{
 }
 
 type DriverHandler struct {
-	driverService driver.IDriverService
+	driverService operator.IDriverService
 	log           mylogger.Logger
 	upgrader      websocket.Upgrader
 }
 
-func NewDriverHandler(driverService driver.IDriverService, log mylogger.Logger) *DriverHandler {
+func NewDriverHandler(driverService operator.IDriverService, log mylogger.Logger) *DriverHandler {
 	return &DriverHandler{
 		driverService: driverService,
 		log:           log,

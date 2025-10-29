@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"ride-hail/internal/auth-service/core/domain/dto"
+	"ride-hail/internal/auth-service/core/domain/data"
 	"ride-hail/internal/auth-service/core/service"
 	"ride-hail/internal/mylogger"
 	"time"
@@ -26,7 +26,7 @@ func NewDriverHandler(driverService *service.DriverService, mylog mylogger.Logge
 
 func (ah *DriverHandler) Register() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var regReq dto.DriverRegistrationRequest
+		var regReq data.DriverRegistrationRequest
 
 		mylog := ah.mylog.Action("Register")
 
@@ -61,7 +61,7 @@ func (ah *DriverHandler) Register() http.HandlerFunc {
 
 func (ah *DriverHandler) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var driverReq dto.DriverRegistrationRequest
+		var driverReq data.DriverRegistrationRequest
 
 		mylog := ah.mylog.Action("Register")
 
