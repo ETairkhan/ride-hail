@@ -5,9 +5,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-
-	"ride-hail/internal/driver-location-service/core/domain/dto"
-	"ride-hail/internal/driver-location-service/core/ports/driver"
+	"ride-hail/internal/driver-location-service/core/domain/data"
+	"ride-hail/internal/driver-location-service/core/ports/oper"
 	"ride-hail/internal/mylogger"
 
 	"github.com/gorilla/websocket"
@@ -20,12 +19,12 @@ var upgrader = websocket.Upgrader{
 }
 
 type DriverHandler struct {
-	driverService driver.IDriverService
+	driverService oper.IDriverService
 	log           mylogger.Logger
 	upgrader      websocket.Upgrader
 }
 
-func NewDriverHandler(driverService driver.IDriverService, log mylogger.Logger) *DriverHandler {
+func NewDriverHandler(driverService oper.IDriverService, log mylogger.Logger) *DriverHandler {
 	return &DriverHandler{
 		driverService: driverService,
 		log:           log,
@@ -65,7 +64,7 @@ func (h *DriverHandler) HandleDriverConnection(w http.ResponseWriter, r *http.Re
 }
 
 func (dh *DriverHandler) GoOnline(w http.ResponseWriter, r *http.Request) {
-	req := dto.DriverCoordinatesDTO{}
+	req := data.DriverCoordinatesDTO{}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		jsonError(w, http.StatusBadRequest, err)
@@ -94,7 +93,7 @@ func (dh *DriverHandler) GoOffline(w http.ResponseWriter, r *http.Request) {
 }
 
 func (dh *DriverHandler) UpdateLocation(w http.ResponseWriter, r *http.Request) {
-	req := dto.NewLocation{}
+	req := data.NewLocation{}
 	driver_id := r.PathValue("driver_id")
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		jsonError(w, http.StatusBadRequest, err)
@@ -111,7 +110,7 @@ func (dh *DriverHandler) UpdateLocation(w http.ResponseWriter, r *http.Request) 
 }
 
 func (dh *DriverHandler) StartRide(w http.ResponseWriter, r *http.Request) {
-	req := dto.StartRide{}
+	req := data.StartRide{}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		jsonError(w, http.StatusBadRequest, err)
@@ -128,7 +127,7 @@ func (dh *DriverHandler) StartRide(w http.ResponseWriter, r *http.Request) {
 }
 
 func (dh *DriverHandler) CompleteRide(w http.ResponseWriter, r *http.Request) {
-	req := dto.RideCompleteForm{}
+	req := data.RideCompleteForm{}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		jsonError(w, http.StatusBadRequest, err)

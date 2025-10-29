@@ -9,10 +9,10 @@ import (
 	"syscall"
 
 	"ride-hail/internal/config"
-	"ride-hail/internal/driver-location-service/adapters/driven/bm"
-	"ride-hail/internal/driver-location-service/adapters/driven/db"
-	"ride-hail/internal/driver-location-service/adapters/driver/myhttp"
-	"ride-hail/internal/driver-location-service/adapters/driver/myhttp/handlers"
+	"ride-hail/internal/driver-location-service/adapters/operator"
+	"ride-hail/internal/driver-location-service/adapters/operator/handlers"
+	"ride-hail/internal/driver-location-service/adapters/service/db"
+	"ride-hail/internal/driver-location-service/adapters/service/rabbitmq"
 	"ride-hail/internal/driver-location-service/core/services"
 	"ride-hail/internal/mylogger"
 )
@@ -32,14 +32,14 @@ func Execute(ctx context.Context, mylog mylogger.Logger, cfg *config.Config) err
 	fmt.Println(cfg.RabbitMq)
 	mylog.Action("Setting up components").Info("Setting up repository, broker, service, and handlers")
 	repository := db.New(database)
-	broker, err := bm.New(ctx, *cfg.RabbitMq, mylog)
+	broker, err := rabbitmq.New(ctx, *cfg.RabbitMq, mylog)
 	if err != nil {
 		return err
 	}
 	mylog.Action("Broker connected").Info("Message broker connection established")
 	service := services.New(repository, &mylog, broker)
 	handler := handlers.New(service, mylog)
-	mux := myhttp.Router(handler, cfg)
+	mux := operator.Router(handler, cfg)
 	mylog.Action("Components set up").Info("All components are set up successfully")
 	httpServer := &http.Server{
 		Addr:    fmt.Sprintf(":%v", cfg.Srv.DriverLocationServicePort),

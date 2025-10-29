@@ -2,26 +2,25 @@ package services
 
 import (
 	"context"
-
-	"ride-hail/internal/driver-location-service/core/domain/dto"
+	"ride-hail/internal/driver-location-service/core/domain/data"
 	"ride-hail/internal/driver-location-service/core/domain/model"
-	"ride-hail/internal/driver-location-service/core/ports/driven"
-	ports "ride-hail/internal/driver-location-service/core/ports/driven"
+	"ride-hail/internal/driver-location-service/core/ports/serv"
+	ports "ride-hail/internal/driver-location-service/core/ports/serv"
 	"ride-hail/internal/mylogger"
 )
 
 type DriverService struct {
-	repositories driven.IDriverRepository
+	repositories serv.IDriverRepository
 	log          *mylogger.Logger
 	broker       ports.IDriverBroker
 }
 
-func NewDriverService(repositories driven.IDriverRepository, log *mylogger.Logger, broker ports.IDriverBroker) *DriverService {
+func NewDriverService(repositories serv.IDriverRepository, log *mylogger.Logger, broker ports.IDriverBroker) *DriverService {
 	return &DriverService{repositories: repositories, log: log, broker: broker}
 }
 
-func (ds *DriverService) GoOnline(ctx context.Context, coordDTO dto.DriverCoordinatesDTO) (dto.DriverOnlineResponse, error) {
-	var response dto.DriverOnlineResponse
+func (ds *DriverService) GoOnline(ctx context.Context, coordDTO data.DriverCoordinatesDTO) (data.DriverOnlineResponse, error) {
+	var response data.DriverOnlineResponse
 	var coord model.DriverCoordinates
 	coord.Driver_id = coordDTO.Driver_id
 	coord.Latitude = coordDTO.Latitude
@@ -29,7 +28,7 @@ func (ds *DriverService) GoOnline(ctx context.Context, coordDTO dto.DriverCoordi
 
 	session_id, err := ds.repositories.GoOnline(ctx, coord)
 	if err != nil {
-		return dto.DriverOnlineResponse{}, err
+		return data.DriverOnlineResponse{}, err
 	}
 	response.Session_id = session_id
 	response.Status = "AVAILABLE"
@@ -37,12 +36,12 @@ func (ds *DriverService) GoOnline(ctx context.Context, coordDTO dto.DriverCoordi
 	return response, nil
 }
 
-func (ds *DriverService) GoOffline(ctx context.Context, driver_id string) (dto.DriverOfflineRespones, error) {
+func (ds *DriverService) GoOffline(ctx context.Context, driver_id string) (data.DriverOfflineRespones, error) {
 	results, err := ds.repositories.GoOffline(ctx, driver_id)
 	if err != nil {
-		return dto.DriverOfflineRespones{}, err
+		return data.DriverOfflineRespones{}, err
 	}
-	var response dto.DriverOfflineRespones
+	var response data.DriverOfflineRespones
 	response.Session_id = results.Session_id
 	response.Status = "OFFLINE"
 	response.Message = "You are now offline"
@@ -52,7 +51,7 @@ func (ds *DriverService) GoOffline(ctx context.Context, driver_id string) (dto.D
 	return response, nil
 }
 
-func (ds *DriverService) UpdateLocation(ctx context.Context, request dto.NewLocation, driver_id string) (dto.NewLocationResponse, error) {
+func (ds *DriverService) UpdateLocation(ctx context.Context, request data.NewLocation, driver_id string) (data.NewLocationResponse, error) {
 	var requestDAO model.NewLocation
 	requestDAO.Accuracy_meters = request.Accuracy_meters
 	requestDAO.Heading_Degrees = request.Heading_Degrees
@@ -61,15 +60,15 @@ func (ds *DriverService) UpdateLocation(ctx context.Context, request dto.NewLoca
 	requestDAO.Speed_kmh = request.Speed_kmh
 	response, err := ds.repositories.UpdateLocation(ctx, driver_id, requestDAO)
 	if err != nil {
-		return dto.NewLocationResponse{}, err
+		return data.NewLocationResponse{}, err
 	}
-	var responseDTO dto.NewLocationResponse
+	var responseDTO data.NewLocationResponse
 	responseDTO.Coordinate_id = response.Coordinate_id
 	responseDTO.Updated_at = response.Updated_at
 	return responseDTO, nil
 }
 
-func (ds *DriverService) StartRide(ctx context.Context, requestMessage dto.StartRide) (dto.StartRideResponse, error) {
+func (ds *DriverService) StartRide(ctx context.Context, requestMessage data.StartRide) (data.StartRideResponse, error) {
 	var requestedData model.StartRide
 	requestedData.Ride_id = requestMessage.Ride_id
 	requestedData.Driver_location.Driver_id = requestMessage.Driver_location.Driver_id
@@ -77,10 +76,10 @@ func (ds *DriverService) StartRide(ctx context.Context, requestMessage dto.Start
 	requestedData.Driver_location.Longitude = requestMessage.Driver_location.Longitude
 	results, err := ds.repositories.StartRide(ctx, requestedData)
 	if err != nil {
-		return dto.StartRideResponse{}, err
+		return data.StartRideResponse{}, err
 	}
 
-	var response dto.StartRideResponse
+	var response data.StartRideResponse
 	response.Message = "Ride started successfully"
 	response.Ride_id = results.Ride_id
 	response.Started_at = results.Started_at
@@ -88,7 +87,7 @@ func (ds *DriverService) StartRide(ctx context.Context, requestMessage dto.Start
 	return response, nil
 }
 
-func (ds *DriverService) CompleteRide(ctx context.Context, request dto.RideCompleteForm) (dto.RideCompleteResponse, error) {
+func (ds *DriverService) CompleteRide(ctx context.Context, request data.RideCompleteForm) (data.RideCompleteResponse, error) {
 	var requestDAO model.RideCompleteForm
 	requestDAO.Ride_id = request.Ride_id
 	requestDAO.ActualDistancekm = request.ActualDistancekm
@@ -97,9 +96,9 @@ func (ds *DriverService) CompleteRide(ctx context.Context, request dto.RideCompl
 	requestDAO.FinalLocation.Longitude = request.FinalLocation.Longitude
 	results, err := ds.repositories.CompleteRide(ctx, requestDAO)
 	if err != nil {
-		return dto.RideCompleteResponse{}, err
+		return data.RideCompleteResponse{}, err
 	}
-	var response dto.RideCompleteResponse
+	var response data.RideCompleteResponse
 	response.Message = results.Message
 	response.Ride_id = results.Ride_id
 	response.Status = results.Status

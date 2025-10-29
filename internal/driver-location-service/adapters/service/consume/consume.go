@@ -5,20 +5,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"ride-hail/internal/driver-location-service/core/domain/data"
 	"sync"
 	"time"
 
 	"ride-hail/internal/config"
 	"ride-hail/internal/mylogger"
 
-	bm "ride-hail/internal/driver-location-service/adapters/driven/bm"
-	"ride-hail/internal/driver-location-service/core/domain/dto"
-	"ride-hail/internal/driver-location-service/core/ports/driven"
+	bm "ride-hail/internal/driver-location-service/adapters/service/rabbitmq"
+	"ride-hail/internal/driver-location-service/core/ports/serv"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-// Константы
 const (
 	rideExchange     = "ride_topic"
 	driverTopic      = "driver_topic"
@@ -32,7 +31,7 @@ const (
 type MatchingConsumer struct {
 	cfg    *config.Config
 	log    mylogger.Logger
-	broker driven.IDriverBroker
+	broker serv.IDriverBroker
 
 	ctx    context.Context
 	appCtx context.Context
@@ -71,7 +70,7 @@ func (c *MatchingConsumer) Run() error {
 		c.appCtx,
 		driverMatchingQ,
 		rideRequestBind,
-		driven.ConsumeOptions{Prefetch: defaultPrefetch, AutoAck: false, QueueDurable: true},
+		serv.ConsumeOptions{Prefetch: defaultPrefetch, AutoAck: false, QueueDurable: true},
 	)
 	if err != nil {
 		return fmt.Errorf("consume driver_matching: %w", err)
@@ -134,7 +133,7 @@ func (c *MatchingConsumer) loop(
 }
 
 func (c *MatchingConsumer) processRideRequest(msg amqp.Delivery) (bool, error) {
-	var req dto.RideRequest
+	var req data.RideRequest
 	if err := json.Unmarshal(msg.Body, &req); err != nil {
 		return false, fmt.Errorf("decode ride.request: %w", err)
 	}
@@ -147,10 +146,6 @@ func (c *MatchingConsumer) processRideRequest(msg amqp.Delivery) (bool, error) {
 	c.log.Action("matching_start").Info("start matching",
 		"ride_id", req.RideID, "type", req.RideType, "pickup", req.Pickup)
 
-	// TODO 1: выбрать кандидатов из БД по статусу AVAILABLE и последним координатам в радиусе
-	// TODO 2: разослать офферы по WS водителям [driver_id...]
-	// TODO 3: ждать первый accept до offerTTL и общий deadline
-	// Заглушка: схитрим и сразу публикуем "accepted" от условного водителя:
 	fakeDriverID := "00000000-0000-0000-0000-000000000001"
 	if err := c.publishDriverAccepted(req, fakeDriverID, 180); err != nil {
 		return true, fmt.Errorf("publish accept: %w", err)
@@ -161,11 +156,11 @@ func (c *MatchingConsumer) processRideRequest(msg amqp.Delivery) (bool, error) {
 	return false, nil
 }
 
-func (c *MatchingConsumer) publishDriverAccepted(req dto.RideRequest, driverID string, etaSec int) error {
+func (c *MatchingConsumer) publishDriverAccepted(req data.RideRequest, driverID string, etaSec int) error {
 	if c.broker == nil {
 		return errors.New("broker is nil")
 	}
-	ev := dto.DriverAccepted{
+	ev := data.DriverAccepted{
 		RideID:   req.RideID,
 		DriverID: driverID,
 		ETA:      etaSec,
@@ -174,11 +169,11 @@ func (c *MatchingConsumer) publishDriverAccepted(req dto.RideRequest, driverID s
 	return c.broker.PublishJSON(c.appCtx, driverTopic, routing, ev)
 }
 
-func (c *MatchingConsumer) publishNoDriver(req dto.RideRequest, reason string) error {
+func (c *MatchingConsumer) publishNoDriver(req data.RideRequest, reason string) error {
 	if c.broker == nil {
 		return errors.New("broker is nil")
 	}
-	ev := dto.RideNoDriver{RideID: req.RideID, Reason: reason}
+	ev := data.RideNoDriver{RideID: req.RideID, Reason: reason}
 	return c.broker.PublishJSON(c.appCtx, rideExchange, "ride.status.NO_DRIVER", ev)
 }
 
