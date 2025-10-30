@@ -156,7 +156,7 @@ func (s *Server) Configure() {
 
 	// TODO: add middleware
 	s.mux.Handle("POST /rides", authMiddleware.Wrap(rideHandler.CreateRide()))
-	// s.mux.Handle("GET /rides/{ride_id}/cancel", nil)
+	s.mux.Handle("POST /rides/{ride_id}/cancel", authMiddleware.Wrap(rideHandler.CancelRide()))
 
 	// websocket routes
 	s.mux.Handle("/ws/passengers/{passenger_id}", dispatcher.WsHandler())

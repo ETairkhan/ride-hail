@@ -1,10 +1,19 @@
+// middleware/auth_middleware.go
 package middleware
 
 import (
+	"context"
 	"net/http"
 	"strings"
 
 	"github.com/golang-jwt/jwt"
+)
+
+type contextKey string
+
+const (
+	passengerIDKey contextKey = "passenger_id"
+	userRoleKey    contextKey = "user_role"
 )
 
 type AuthMiddleware struct {
@@ -56,9 +65,11 @@ func (am *AuthMiddleware) Wrap(next http.Handler) http.Handler {
 			return
 		}
 
-		r.Header.Set("X-UserId", userId)
-		r.Header.Set("X-Role", role)
+		// Используем контекст вместо заголовков
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, passengerIDKey, userId)
+		ctx = context.WithValue(ctx, userRoleKey, role)
 
-		next.ServeHTTP(w, r)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
