@@ -4,11 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"sync"
-	"time"
-
 	"ride-hail/internal/driver-location-service/core/ports/driver"
 	"ride-hail/internal/mylogger"
+	"sync"
+	"time"
 
 	dto "ride-hail/internal/driver-location-service/core/domain/dto"
 	messagebrokerdto "ride-hail/internal/driver-location-service/core/domain/message_broker_dto"
@@ -144,13 +143,12 @@ func (d *Distributor) handleDriverMessage(msg dto.DriverMessage) {
 		},
 		SpeedKmh:       LocationUpdate.SpeedKmh,
 		HeadingDegrees: LocationUpdate.HeadingDegrees,
-		Timestamp:      time.Now().String(),
+		Timestamp:      time.Now(),
 	}
 
 	if err := d.broker.PublishJSON(context.Background(), "location_fanout", "location", rmMessage); err != nil {
 		log.Error("Failed to Publish location_fanout", err)
 	}
-
 }
 
 func (d *Distributor) handleRideRequest(requestDelivery amqp.Delivery) {
@@ -272,7 +270,7 @@ func (d *Distributor) handleLocationUpdate(driverID string, update websocketdto.
 		},
 		SpeedKmh:       update.SpeedKmh,
 		HeadingDegrees: update.HeadingDegrees,
-		Timestamp:      time.Now().String(),
+		Timestamp:      time.Now(),
 	}
 
 	if err := d.broker.PublishJSON(ctx, "location_updates", "", locationUpdate); err != nil {

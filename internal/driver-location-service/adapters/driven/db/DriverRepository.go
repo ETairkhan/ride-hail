@@ -152,7 +152,7 @@ func (dr *DriverRepository) CompleteRide(ctx context.Context, requestData model.
 
 	RidesQuery := `
 		UPDATE rides
-		SET status = 'COMPLETED',
+		SET status = 'COMPLETED'
 		WHERE ride_id = $1;
 	`
 	_, err := dr.db.GetConn().Exec(ctx, RidesQuery, requestData.Ride_id)
@@ -167,7 +167,7 @@ func (dr *DriverRepository) CompleteRide(ctx context.Context, requestData model.
 			latitude = $3,
 			longitude = $4
 		FROM rides
-		WHERE coordinates.coord_id = rides.destination_coord_id && rides.ride_id = $5;
+		WHERE coordinates.coord_id = rides.destination_coord_id AND rides.ride_id = $5;
 	`
 
 	_, err = dr.db.GetConn().Exec(ctx, CoordinatesQuery, requestData.ActualDistancekm, requestData.ActualDurationm, requestData.FinalLocation.Latitude, requestData.FinalLocation.Longitude, requestData.Ride_id)
@@ -179,7 +179,7 @@ func (dr *DriverRepository) CompleteRide(ctx context.Context, requestData model.
 		UPDATE drivers
 		SET status = 'AVAILABLE'
 		FROM rides
-		WHERE drivers.driver_id = rides.driver_id && rides.ride_id = $1;
+		WHERE drivers.driver_id = rides.driver_id AND rides.ride_id = $1;
 	`
 	_, err = dr.db.GetConn().Exec(ctx, UpdateDriverStatusQuery, requestData.Ride_id)
 	if err != nil {
@@ -295,6 +295,7 @@ func (dr *DriverRepository) GetDriverIdByRideId(ctx context.Context, ride_id str
 
 	return *driver_id, nil // Dereference the pointer to return the driver_id string
 }
+
 func (dr *DriverRepository) GetRideIdByDriverId(ctx context.Context, driver_id string) (string, error) {
 	Query := `
 		SELECT ride_id FROM rides WHERE driver_id = $1 AND status NOT IN ('CANCELLED', 'COMPLETED');
@@ -303,7 +304,6 @@ func (dr *DriverRepository) GetRideIdByDriverId(ctx context.Context, driver_id s
 	err := dr.db.conn.QueryRow(ctx, Query, driver_id).Scan(&ride_id)
 	if err != nil {
 		return "", err
-
 	}
 	return ride_id, nil
 }

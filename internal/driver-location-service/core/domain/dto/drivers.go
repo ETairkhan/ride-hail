@@ -54,7 +54,7 @@ type NewLocation struct {
 
 type NewLocationResponse struct {
 	Coordinate_id string `json:"coordinate_id"`
-	Updated_at    string `json:"updated_at"`
+	Updated_at    time.Time `json:"updated_at"`
 }
 
 // Complete Ride

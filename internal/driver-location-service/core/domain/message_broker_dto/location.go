@@ -9,7 +9,7 @@ type LocationUpdate struct {
 	Location       Location `json:"location"`
 	SpeedKmh       float64  `json:"speed_kmh"`
 	HeadingDegrees float64  `json:"heading_degrees"`
-	Timestamp      string   `json:"timestamp"`
+	Timestamp      time.Time   `json:"timestamp"`
 }
 
 type DriverLocationUpdate struct {

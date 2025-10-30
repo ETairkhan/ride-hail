@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 // Online Mode
 type DriverCoordinates struct {
 	Driver_id string
@@ -45,7 +47,7 @@ type NewLocation struct {
 
 type NewLocationResponse struct {
 	Coordinate_id string
-	Updated_at    string
+	Updated_at    time.Time
 }
 
 // Complete Ride
