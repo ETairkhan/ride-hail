@@ -27,16 +27,14 @@ func NewDriverHandler(driverService *service.DriverService, mylog mylogger.Logge
 func (ah *DriverHandler) Register() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var regReq data.DriverRegistrationRequest
-
 		mylog := ah.mylog.Action("Register")
-
 		if err := json.NewDecoder(r.Body).Decode(&regReq); err != nil {
 			mylog.Error("Failed to parse auth", err)
 			jsonError(w, http.StatusBadRequest, errors.New("failed to parse JSON"))
 			return
 		}
-		mylog.Debug("registration data successfully parsed")
 
+		mylog.Debug("registration data successfully parsed")
 		ctx, cancel := context.WithTimeout(context.Background(), WaitTime*time.Second)
 		defer cancel()
 
@@ -61,17 +59,16 @@ func (ah *DriverHandler) Register() http.HandlerFunc {
 
 func (ah *DriverHandler) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var driverReq data.DriverRegistrationRequest
-
-		mylog := ah.mylog.Action("Register")
-
+		// CHANGED: Use DriverAuthRequest instead of DriverRegistrationRequest
+		var driverReq data.DriverAuthRequest
+		mylog := ah.mylog.Action("Login") // CHANGED: from "Register" to "Login"
 		if err := json.NewDecoder(r.Body).Decode(&driverReq); err != nil {
-			mylog.Error("Failed to parse auth", err)
+			mylog.Error("Failed to parse login request", err) // CHANGED: error message
 			jsonError(w, http.StatusBadRequest, errors.New("failed to parse JSON"))
 			return
 		}
-		mylog.Info("registration data successfully parsed")
 
+		mylog.Info("login data successfully parsed") // CHANGED: from "registration" to "login"
 		ctx, cancel := context.WithTimeout(context.Background(), WaitTime*time.Second)
 		defer cancel()
 
@@ -82,7 +79,7 @@ func (ah *DriverHandler) Login() http.HandlerFunc {
 		}
 
 		jsonResponse(w, http.StatusOK, map[string]string{
-			"msg":        fmt.Sprintf("%s login successfully!", driverReq.Username),
+			"msg":        "Login successfully!", // CHANGED: from username-specific message
 			"jwt_access": accessToken,
 		})
 		ah.mylog.Info("Successfully login!")
