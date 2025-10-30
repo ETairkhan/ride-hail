@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"ride-hail/internal/auth-service/adapters/service/db"
+	"ride-hail/internal/auth-service/adapters/service/database"
 	"ride-hail/internal/auth-service/core/domain/data"
 	"ride-hail/internal/auth-service/core/service"
 	"ride-hail/internal/logger"
@@ -44,7 +44,7 @@ func (ah *DriverHandler) Register() http.HandlerFunc {
 
 		userId, accessToken, err := ah.driverService.Register(ctx, regReq)
 		if err != nil {
-			if errors.Is(err, db.ErrEmailRegistered) || errors.Is(err, db.ErrDriverLicenseNumberRegistered) {
+			if errors.Is(err, database.ErrEmailRegistered) || errors.Is(err, database.ErrDriverLicenseNumberRegistered) {
 				JsonError(w, http.StatusConflict, err)
 				return
 			}

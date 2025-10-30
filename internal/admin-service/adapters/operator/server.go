@@ -7,7 +7,7 @@ import (
 	"net/http"
 	handle2 "ride-hail/internal/admin-service/adapters/operator/handle"
 	"ride-hail/internal/admin-service/adapters/operator/middleware"
-	"ride-hail/internal/admin-service/adapters/service/db"
+	"ride-hail/internal/admin-service/adapters/service/database"
 	"ride-hail/internal/admin-service/core/ports"
 	"ride-hail/internal/admin-service/core/service"
 	"ride-hail/internal/config"
@@ -123,8 +123,8 @@ func (s *Server) startHTTPServer() error {
 // Configure sets up the HTTP handlers for various APIs including Market Data, Data Mode control, and Health checks.
 func (s *Server) Configure() {
 	// Repositories and services
-	systemOverviewRepo := db.NewSystemOverviewRepo(s.db)
-	activeRidesRepo := db.NewActiveDrivesRepo(s.db)
+	systemOverviewRepo := database.NewSystemOverviewRepo(s.db)
+	activeRidesRepo := database.NewActiveDrivesRepo(s.db)
 
 	systemOverviewService := service.NewSystemOverviewService(s.ctx, s.mylog, systemOverviewRepo)
 	activeRidesService := service.NewActiveDrivesService(s.ctx, s.mylog, activeRidesRepo)
@@ -140,7 +140,7 @@ func (s *Server) Configure() {
 }
 
 func (s *Server) initializeDatabase() error {
-	db, err := db.Start(s.ctx, s.cfg.DB, s.mylog)
+	db, err := database.Start(s.ctx, s.cfg.DB, s.mylog)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}

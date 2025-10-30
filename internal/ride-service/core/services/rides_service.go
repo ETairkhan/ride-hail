@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"ride-hail/internal/logger"
-	"ride-hail/internal/ride-service/core/domain/dto"
+	"ride-hail/internal/ride-service/core/domain/data"
 	"ride-hail/internal/ride-service/core/domain/model"
 	websocketdto "ride-hail/internal/ride-service/core/domain/websocket_dto"
 	"ride-hail/internal/ride-service/core/ports"
@@ -63,12 +63,12 @@ func NewRidesService(ctx context.Context,
 }
 
 // implement me
-func (rs *RidesService) CreateRide(req dto.RidesRequestDto) (dto.RidesResponseDto, error) {
+func (rs *RidesService) CreateRide(req data.RidesRequestDto) (data.RidesResponseDto, error) {
 	m := model.Rides{}
 	log := rs.mylog.Action("CreateRide")
 
 	if err := validateRideRequest(req); err != nil {
-		return dto.RidesResponseDto{}, err
+		return data.RidesResponseDto{}, err
 	}
 
 	ctx, cancel := context.WithTimeout(rs.ctx, time.Second*15)
@@ -77,14 +77,14 @@ func (rs *RidesService) CreateRide(req dto.RidesRequestDto) (dto.RidesResponseDt
 	distance, err := rs.RidesRepo.GetDistance(ctx, req)
 	if err != nil {
 		log.Error("cannot get distance between two points", err)
-		return dto.RidesResponseDto{}, err
+		return data.RidesResponseDto{}, err
 	}
 
 	// only for ride-number
 	numberOfRides, err := rs.RidesRepo.GetNumberRides(ctx)
 	if err != nil {
 		log.Error("cannot get number of rides", err)
-		return dto.RidesResponseDto{}, err
+		return data.RidesResponseDto{}, err
 	}
 
 	RideNumber := fmt.Sprintf("RIDE_%d%d%d_%0*d", time.Now().Year(), time.Now().Month(), time.Now().Day(), 3, numberOfRides+1)
@@ -103,7 +103,7 @@ func (rs *RidesService) CreateRide(req dto.RidesRequestDto) (dto.RidesResponseDt
 		EstimatedFare = XL_BASE + (distance * XL_RATE_PER_KM) + (DEFUALT_RATE_PER_MIN * XL_RATE_PER_MIN)
 	default:
 		log.Warn("unkown ride type", "type", req.RideType)
-		return dto.RidesResponseDto{}, fmt.Errorf("unkown ride type")
+		return data.RidesResponseDto{}, fmt.Errorf("unkown ride type")
 	}
 
 	// PRIORITY estimate
@@ -152,7 +152,7 @@ func (rs *RidesService) CreateRide(req dto.RidesRequestDto) (dto.RidesResponseDt
 	defer cancel()
 	ride_id, err := rs.RidesRepo.CreateRide(ctx, m)
 	if err != nil {
-		return dto.RidesResponseDto{}, err
+		return data.RidesResponseDto{}, err
 	}
 
 	// publish message to rabbitmq
@@ -185,11 +185,11 @@ func (rs *RidesService) CreateRide(req dto.RidesRequestDto) (dto.RidesResponseDt
 
 	if err := rs.RidesBroker.PushMessageToRequest(rs.ctx, rideMsg); err != nil {
 		log.Error("Failed to publish message", err)
-		return dto.RidesResponseDto{}, fmt.Errorf("cannot send message to broker: %w", err)
+		return data.RidesResponseDto{}, fmt.Errorf("cannot send message to broker: %w", err)
 	}
 
 	log.Info("successfully created a ride", "ride-id", ride_id)
-	res := dto.RidesResponseDto{
+	res := data.RidesResponseDto{
 		RideId:                   ride_id,
 		RideNumber:               RideNumber,
 		Status:                   "REQUESTED",
@@ -207,7 +207,7 @@ var (
 	ErrInvalidAdress    = errors.New("maximum 255 characters allowed")
 )
 
-func validateRideRequest(req dto.RidesRequestDto) error {
+func validateRideRequest(req data.RidesRequestDto) error {
 	if err := validatePassengerId(req.PassengerId); err != nil {
 		return fmt.Errorf("invalid passenger id: %v", err)
 	}
@@ -302,7 +302,7 @@ func validateRideType(s *string) error {
 	return nil
 }
 
-func (rs *RidesService) CancelRide(req dto.RidesCancelRequestDto, rideId string) (dto.RideCancelResponseDto, error) {
+func (rs *RidesService) CancelRide(req data.RidesCancelRequestDto, rideId string) (data.RideCancelResponseDto, error) {
 	log := rs.mylog.Action("CreateRide")
 
 	ctx, cancel := context.WithTimeout(rs.ctx, time.Second*15)
@@ -313,13 +313,13 @@ func (rs *RidesService) CancelRide(req dto.RidesCancelRequestDto, rideId string)
 	driverId, err := rs.RidesRepo.CancelRide(ctx, rideId, req.Reason)
 	if err != nil {
 		log.Error("Failed to cancel ride", err)
-		return dto.RideCancelResponseDto{}, err
+		return data.RideCancelResponseDto{}, err
 	}
 	log.Info("Ride cancelled successfully")
 
 	cancelledAt := time.Now().Format(time.RFC3339)
 
-	res := dto.RideCancelResponseDto{
+	res := data.RideCancelResponseDto{
 		RideId:      rideId,
 		Status:      "CANCELLED",
 		CancelledAt: cancelledAt,
@@ -339,7 +339,7 @@ func (rs *RidesService) CancelRide(req dto.RidesCancelRequestDto, rideId string)
 
 		err = rs.RidesBroker.PushMessageToStatus(ctx, m2)
 		if err != nil {
-			return dto.RideCancelResponseDto{}, err
+			return data.RideCancelResponseDto{}, err
 		}
 	}
 

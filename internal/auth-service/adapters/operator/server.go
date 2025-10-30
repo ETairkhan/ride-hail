@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	handle2 "ride-hail/internal/auth-service/adapters/operator/handle"
-	"ride-hail/internal/auth-service/adapters/service/db"
+	"ride-hail/internal/auth-service/adapters/service/database"
 	"ride-hail/internal/auth-service/core/service"
 	"ride-hail/internal/config"
 	"ride-hail/internal/logger"
@@ -23,7 +23,7 @@ type Server struct {
 	cfg    *config.Config
 	srv    *http.Server
 	mylog  logger.Logger
-	db     *db.DB
+	db     *database.DB
 	ctx    context.Context
 	appCtx context.Context
 	mu     sync.Mutex
@@ -121,14 +121,14 @@ func (s *Server) startHTTPServer() error {
 // Configure sets up the HTTP handlers for various APIs including Market Data, Data Mode control, and Health checks.
 func (s *Server) Configure() {
 	// Repositories and services
-	authRepo := db.NewAuthRepo(s.ctx, s.db)
+	authRepo := database.NewAuthRepo(s.ctx, s.db)
 	authService := service.NewAuthService(s.ctx, s.cfg, authRepo, s.mylog)
 	authHandler := handle2.NewAuthHandler(authService, s.mylog)
 
 	s.mux.Handle("POST /user/register", authHandler.Register())
 	s.mux.Handle("POST /user/login", authHandler.Login())
 
-	driverRepo := db.NewDriverRepo(s.ctx, s.db)
+	driverRepo := database.NewDriverRepo(s.ctx, s.db)
 	driverService := service.NewDriverService(s.ctx, s.cfg, driverRepo, s.mylog)
 	driverHandler := handle2.NewDriverHandler(driverService, s.mylog)
 
@@ -137,7 +137,7 @@ func (s *Server) Configure() {
 }
 
 func (s *Server) initializeDatabase() error {
-	db, err := db.Start(s.ctx, s.cfg.DB, s.mylog)
+	db, err := database.Start(s.ctx, s.cfg.DB, s.mylog)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}

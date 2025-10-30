@@ -1,11 +1,11 @@
-package db
+package database
 
 import (
 	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"ride-hail/internal/ride-service/core/domain/dto"
+	"ride-hail/internal/ride-service/core/domain/data"
 	"ride-hail/internal/ride-service/core/domain/model"
 	"ride-hail/internal/ride-service/core/ports"
 
@@ -26,7 +26,7 @@ func NewRidesRepo(db *DB) ports.IRidesRepo {
 	}
 }
 
-func (rr *RidesRepo) GetDistance(ctx context.Context, req dto.RidesRequestDto) (float64, error) {
+func (rr *RidesRepo) GetDistance(ctx context.Context, req data.RidesRequestDto) (float64, error) {
 	q := `SELECT ST_Distance(ST_MakePoint($1, $2)::geography, ST_MakePoint($3, $4)::geography) / 1000 as distance_km`
 
 	db := rr.db.conn
@@ -189,7 +189,7 @@ func (rr *RidesRepo) ChangeStatusMatch(ctx context.Context, rideID, driverID str
 		passengerId string = ""
 		rideNumber  string = ""
 	)
-	
+
 	q = `SELECT passenger_id, ride_number FROM rides WHERE ride_id = $1`
 	row := tx.QueryRow(ctx, q, rideID)
 
@@ -374,7 +374,7 @@ func (pr *RidesRepo) CancelEveryPossibleRides(ctx context.Context) error {
 	if err != nil {
 
 		// tx.Rollback(ctx)
-		return  err
+		return err
 	}
 
 	// return tx.Commit(ctx)

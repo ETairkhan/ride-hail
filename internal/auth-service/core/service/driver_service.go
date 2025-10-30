@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"ride-hail/internal/auth-service/adapters/service/db"
+	"ride-hail/internal/auth-service/adapters/service/database"
 	"ride-hail/internal/auth-service/core/domain/data"
 	"ride-hail/internal/auth-service/core/domain/models"
 	"ride-hail/internal/config"
@@ -17,14 +17,14 @@ import (
 type DriverService struct {
 	ctx        context.Context
 	cfg        *config.Config
-	driverRepo *db.DriverRepo
+	driverRepo *database.DriverRepo
 	mylog      logger.Logger
 }
 
 func NewDriverService(
 	ctx context.Context,
 	cfg *config.Config,
-	driverRepo *db.DriverRepo,
+	driverRepo *database.DriverRepo,
 	mylogger logger.Logger,
 ) *DriverService {
 	return &DriverService{
@@ -71,11 +71,11 @@ func (ds *DriverService) Register(ctx context.Context, regReq data.DriverRegistr
 	// add user to db
 	id, err := ds.driverRepo.Create(ctx, user)
 	if err != nil {
-		if errors.Is(err, db.ErrEmailRegistered) {
+		if errors.Is(err, database.ErrEmailRegistered) {
 			mylog.Warn("Failed to register, email already registered")
 			return "", "", err
 		}
-		if errors.Is(err, db.ErrDriverLicenseNumberRegistered) {
+		if errors.Is(err, database.ErrDriverLicenseNumberRegistered) {
 			mylog.Warn("Failed to register, driver licence number already registered")
 			return "", "", err
 		}

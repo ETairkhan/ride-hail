@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"context"
@@ -21,13 +21,12 @@ type DB struct {
 }
 
 // Start initializes and returns a new DB instance with a single connection
-func New(ctx context.Context, dbCfg *config.DBconfig, mylog logger.Logger) (*DB, error) {
+func Start(ctx context.Context, dbCfg *config.DBconfig, mylog logger.Logger) (*DB, error) {
 	d := &DB{
-		cfg:          dbCfg,
-		ctx:          ctx,
-		mylog:        mylog,
-		mu:           &sync.Mutex{},
-		reconnecting: false,
+		cfg:   dbCfg,
+		ctx:   ctx,
+		mylog: mylog,
+		mu:    &sync.Mutex{},
 	}
 
 	if err := d.connect(); err != nil {
@@ -62,8 +61,7 @@ func (d *DB) IsAlive() error {
 func (d *DB) connect() error {
 	// Establish connection
 	conn, err := pgx.Connect(d.ctx, fmt.Sprintf(
-		"postgres://%s:%s@%s:%d/%s?sslmode=disable",
-
+		"postgres://%v:%v@%v:%v/%v?sslmode=disable",
 		d.cfg.User,
 		d.cfg.Password,
 		d.cfg.Host,
@@ -71,7 +69,7 @@ func (d *DB) connect() error {
 		d.cfg.Database,
 	))
 	if err != nil {
-		return fmt.Errorf("failed to connect to database: %v", err)
+		return fmt.Errorf("failed to connect to database: %w", err)
 	}
 	d.conn = conn
 	return nil

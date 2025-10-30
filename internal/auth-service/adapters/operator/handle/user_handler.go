@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"ride-hail/internal/auth-service/adapters/service/db"
+	"ride-hail/internal/auth-service/adapters/service/database"
 	"ride-hail/internal/auth-service/core/domain/data"
 	"ride-hail/internal/auth-service/core/service"
 	"ride-hail/internal/logger"
@@ -44,7 +44,7 @@ func (ah *AuthHandler) Register() http.HandlerFunc {
 
 		userId, accessToken, err := ah.authService.Register(ctx, regReq)
 		if err != nil {
-			if errors.Is(err, db.ErrEmailRegistered) {
+			if errors.Is(err, database.ErrEmailRegistered) {
 				JsonError(w, http.StatusConflict, err)
 				return
 			}

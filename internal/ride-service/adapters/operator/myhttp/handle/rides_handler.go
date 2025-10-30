@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"ride-hail/internal/logger"
-	"ride-hail/internal/ride-service/core/domain/dto"
+	"ride-hail/internal/ride-service/core/domain/data"
 	"ride-hail/internal/ride-service/core/ports"
 )
 
@@ -23,7 +23,7 @@ func NewRidesHandler(rs ports.IRidesService, log logger.Logger) *RidesHandler {
 
 func (rh *RidesHandler) CreateRide() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := dto.RidesRequestDto{}
+		req := data.RidesRequestDto{}
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			JsonError(w, http.StatusBadRequest, err)
@@ -44,7 +44,7 @@ func (rh *RidesHandler) CancelRide() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		rideId := r.PathValue("ride_id")
 
-		req := dto.RidesCancelRequestDto{}
+		req := data.RidesCancelRequestDto{}
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			JsonError(w, http.StatusBadRequest, err)

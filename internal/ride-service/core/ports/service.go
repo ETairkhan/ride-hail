@@ -1,14 +1,14 @@
 package ports
 
 import (
-	"ride-hail/internal/ride-service/core/domain/dto"
+	"ride-hail/internal/ride-service/core/domain/data"
 	messagebrokerdto "ride-hail/internal/ride-service/core/domain/message_broker_dto"
 	websocketdto "ride-hail/internal/ride-service/core/domain/websocket_dto"
 )
 
 type IRidesService interface {
-	CreateRide(dto.RidesRequestDto) (dto.RidesResponseDto, error)
-	CancelRide(dto.RidesCancelRequestDto, string) (dto.RideCancelResponseDto, error)
+	CreateRide(data.RidesRequestDto) (data.RidesResponseDto, error)
+	CancelRide(data.RidesCancelRequestDto, string) (data.RideCancelResponseDto, error)
 
 	// input: rideId, driverId, output: passengerId, rideNumber, error
 	// set to status match, and also send to the exchange

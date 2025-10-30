@@ -1,4 +1,4 @@
-package dto
+package data
 
 type RidesCancelRequestDto struct {
 	Reason string `json:"reason"`

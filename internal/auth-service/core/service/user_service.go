@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"ride-hail/internal/auth-service/adapters/service/db"
+	"ride-hail/internal/auth-service/adapters/service/database"
 	"ride-hail/internal/auth-service/core/domain/data"
 	"ride-hail/internal/auth-service/core/domain/models"
 	"ride-hail/internal/config"
@@ -17,14 +17,14 @@ import (
 type AuthService struct {
 	ctx      context.Context
 	cfg      *config.Config
-	authRepo db.AuthRepo
+	authRepo database.AuthRepo
 	mylog    logger.Logger
 }
 
 func NewAuthService(
 	ctx context.Context,
 	cfg *config.Config,
-	authRepo *db.AuthRepo,
+	authRepo *database.AuthRepo,
 	mylogger logger.Logger,
 ) *AuthService {
 	return &AuthService{
@@ -57,7 +57,7 @@ func (as *AuthService) Register(ctx context.Context, regReq data.UserRegistratio
 	// add user to db
 	id, err := as.authRepo.Create(ctx, user)
 	if err != nil {
-		if errors.Is(err, db.ErrEmailRegistered) {
+		if errors.Is(err, database.ErrEmailRegistered) {
 			mylog.Warn("Failed to register, email already registered")
 			return "", "", err
 		}

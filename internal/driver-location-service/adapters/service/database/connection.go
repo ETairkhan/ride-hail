@@ -1,18 +1,16 @@
-package db
+package database
 
 import (
 	"context"
 	"fmt"
-	"sync"
-
-	"ride-hail/internal/admin-service/core/ports"
 	"ride-hail/internal/config"
 	"ride-hail/internal/logger"
+	"sync"
 
 	"github.com/jackc/pgx/v5"
 )
 
-type DB struct {
+type DataBase struct {
 	ctx          context.Context
 	cfg          *config.DBconfig
 	mylog        logger.Logger
@@ -22,8 +20,8 @@ type DB struct {
 }
 
 // Start initializes and returns a new DB instance with a single connection
-func Start(ctx context.Context, dbCfg *config.DBconfig, mylog logger.Logger) (ports.IDB, error) {
-	d := &DB{
+func ConnectDB(ctx context.Context, dbCfg *config.DBconfig, mylog logger.Logger) (*DataBase, error) {
+	d := &DataBase{
 		cfg:   dbCfg,
 		ctx:   ctx,
 		mylog: mylog,
@@ -37,12 +35,12 @@ func Start(ctx context.Context, dbCfg *config.DBconfig, mylog logger.Logger) (po
 	return d, nil
 }
 
-func (d *DB) GetConn() *pgx.Conn {
+func (d *DataBase) GetConn() *pgx.Conn {
 	return d.conn
 }
 
 // Close closes the connection
-func (d *DB) Close() error {
+func (d *DataBase) Close() error {
 	if err := d.conn.Close(d.ctx); err != nil {
 		return fmt.Errorf("close database connection: %v", err)
 	}
@@ -50,7 +48,7 @@ func (d *DB) Close() error {
 }
 
 // IsAlive pings the DB to verify it's responsive
-func (d *DB) IsAlive() error {
+func (d *DataBase) IsAlive() error {
 	if d.conn == nil {
 		return fmt.Errorf("DB is not initialized")
 	}
@@ -63,7 +61,7 @@ func (d *DB) IsAlive() error {
 	return nil
 }
 
-func (d *DB) connect() error {
+func (d *DataBase) connect() error {
 	// Establish connection
 	conn, err := pgx.Connect(d.ctx, fmt.Sprintf(
 		"postgres://%v:%v@%v:%v/%v?sslmode=disable",

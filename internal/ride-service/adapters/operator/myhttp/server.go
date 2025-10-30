@@ -10,9 +10,9 @@ import (
 	"ride-hail/internal/ride-service/adapters/operator/myhttp/handle"
 	"ride-hail/internal/ride-service/adapters/operator/myhttp/middleware"
 	"ride-hail/internal/ride-service/adapters/operator/myhttp/ws"
-	"ride-hail/internal/ride-service/adapters/service/bm"
-	"ride-hail/internal/ride-service/adapters/service/db"
+	"ride-hail/internal/ride-service/adapters/service/database"
 	"ride-hail/internal/ride-service/adapters/service/notification"
+	"ride-hail/internal/ride-service/adapters/service/rabbitmq"
 	websocketdto "ride-hail/internal/ride-service/core/domain/websocket_dto"
 	"ride-hail/internal/ride-service/core/ports"
 	"ride-hail/internal/ride-service/core/services"
@@ -38,7 +38,7 @@ type Server struct {
 	notify     *notification.Notification
 	dispatcher *ws.Dispatcher
 
-	db               *db.DB
+	db               *database.DB
 	mb               ports.IRidesBroker
 	rideService      ports.IRidesService
 	passengerService ports.IPassengerService
@@ -62,7 +62,7 @@ func (s *Server) Run() error {
 	mylog := s.mylog.Action("server_started").With("port", s.cfg.Srv.RideServicePort)
 
 	// Initialize database connection
-	db, err := db.New(s.ctx, s.cfg.DB, mylog)
+	db, err := database.New(s.ctx, s.cfg.DB, mylog)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}
@@ -70,7 +70,7 @@ func (s *Server) Run() error {
 	mylog.Info("Successful database connection")
 
 	// Initialize RabbitMQ connection
-	mb, err := bm.New(s.appCtx, *s.cfg.RabbitMq, s.mylog)
+	mb, err := rabbitmq.New(s.appCtx, *s.cfg.RabbitMq, s.mylog)
 	if err != nil {
 		return fmt.Errorf("failed to connect to rabbitmq: %w", err)
 	}
@@ -171,8 +171,8 @@ func (s *Server) startHTTPServer() error {
 // Configure sets up the HTTP handlers for various APIs including Market Data, Data Mode control, and Health checks.
 func (s *Server) Configure() {
 	// Repositories
-	rideRepo := db.NewRidesRepo(s.db)
-	passengerRepo := db.NewPassengerRepo(s.db)
+	rideRepo := database.NewRidesRepo(s.db)
+	passengerRepo := database.NewPassengerRepo(s.db)
 
 	// services
 	rideService := services.NewRidesService(s.appCtx, s.mylog, rideRepo, s.mb, nil)

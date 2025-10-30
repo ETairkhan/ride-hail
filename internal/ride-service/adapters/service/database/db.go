@@ -1,16 +1,17 @@
-package db
+package database
 
 import (
 	"context"
 	"fmt"
+	"sync"
+
 	"ride-hail/internal/config"
 	"ride-hail/internal/logger"
-	"sync"
 
 	"github.com/jackc/pgx/v5"
 )
 
-type DataBase struct {
+type DB struct {
 	ctx          context.Context
 	cfg          *config.DBconfig
 	mylog        logger.Logger
@@ -20,12 +21,13 @@ type DataBase struct {
 }
 
 // Start initializes and returns a new DB instance with a single connection
-func ConnectDB(ctx context.Context, dbCfg *config.DBconfig, mylog logger.Logger) (*DataBase, error) {
-	d := &DataBase{
-		cfg:   dbCfg,
-		ctx:   ctx,
-		mylog: mylog,
-		mu:    &sync.Mutex{},
+func New(ctx context.Context, dbCfg *config.DBconfig, mylog logger.Logger) (*DB, error) {
+	d := &DB{
+		cfg:          dbCfg,
+		ctx:          ctx,
+		mylog:        mylog,
+		mu:           &sync.Mutex{},
+		reconnecting: false,
 	}
 
 	if err := d.connect(); err != nil {
@@ -35,12 +37,8 @@ func ConnectDB(ctx context.Context, dbCfg *config.DBconfig, mylog logger.Logger)
 	return d, nil
 }
 
-func (d *DataBase) GetConn() *pgx.Conn {
-	return d.conn
-}
-
 // Close closes the connection
-func (d *DataBase) Close() error {
+func (d *DB) Close() error {
 	if err := d.conn.Close(d.ctx); err != nil {
 		return fmt.Errorf("close database connection: %v", err)
 	}
@@ -48,7 +46,7 @@ func (d *DataBase) Close() error {
 }
 
 // IsAlive pings the DB to verify it's responsive
-func (d *DataBase) IsAlive() error {
+func (d *DB) IsAlive() error {
 	if d.conn == nil {
 		return fmt.Errorf("DB is not initialized")
 	}
@@ -61,10 +59,11 @@ func (d *DataBase) IsAlive() error {
 	return nil
 }
 
-func (d *DataBase) connect() error {
+func (d *DB) connect() error {
 	// Establish connection
 	conn, err := pgx.Connect(d.ctx, fmt.Sprintf(
-		"postgres://%v:%v@%v:%v/%v?sslmode=disable",
+		"postgres://%s:%s@%s:%d/%s?sslmode=disable",
+
 		d.cfg.User,
 		d.cfg.Password,
 		d.cfg.Host,
@@ -72,7 +71,7 @@ func (d *DataBase) connect() error {
 		d.cfg.Database,
 	))
 	if err != nil {
-		return fmt.Errorf("failed to connect to database: %w", err)
+		return fmt.Errorf("failed to connect to database: %v", err)
 	}
 	d.conn = conn
 	return nil

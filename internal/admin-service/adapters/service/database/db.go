@@ -1,10 +1,11 @@
-package db
+package database
 
 import (
 	"context"
 	"fmt"
 	"sync"
 
+	"ride-hail/internal/admin-service/core/ports"
 	"ride-hail/internal/config"
 	"ride-hail/internal/logger"
 
@@ -21,7 +22,7 @@ type DB struct {
 }
 
 // Start initializes and returns a new DB instance with a single connection
-func Start(ctx context.Context, dbCfg *config.DBconfig, mylog logger.Logger) (*DB, error) {
+func Start(ctx context.Context, dbCfg *config.DBconfig, mylog logger.Logger) (ports.IDB, error) {
 	d := &DB{
 		cfg:   dbCfg,
 		ctx:   ctx,
@@ -34,6 +35,10 @@ func Start(ctx context.Context, dbCfg *config.DBconfig, mylog logger.Logger) (*D
 	}
 
 	return d, nil
+}
+
+func (d *DB) GetConn() *pgx.Conn {
+	return d.conn
 }
 
 // Close closes the connection
