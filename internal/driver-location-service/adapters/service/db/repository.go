@@ -1,4 +1,4 @@
-package database
+package db
 
 type Repository struct {
 	DriverRepository *DriverRepository

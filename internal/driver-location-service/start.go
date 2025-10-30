@@ -11,7 +11,7 @@ import (
 	"syscall"
 
 	"ride-hail/internal/config"
-	"ride-hail/internal/driver-location-service/adapters/service/database"
+	"ride-hail/internal/driver-location-service/adapters/service/db"
 	"ride-hail/internal/driver-location-service/adapters/service/rabbitmq"
 	"ride-hail/internal/driver-location-service/adapters/service/ws"
 	"ride-hail/internal/driver-location-service/core/services"
@@ -26,7 +26,7 @@ func Execute(ctx context.Context, mylog logger.Logger, cfg *config.Config) error
 	defer close()
 
 	// Connecting to Database
-	database, err := database.ConnectDB(newCtx, cfg.DB, mylog)
+	database, err := db.ConnectDB(newCtx, cfg.DB, mylog)
 	if err != nil {
 		log.Error("Database connection failed: ", err)
 		return err
@@ -55,7 +55,7 @@ func Execute(ctx context.Context, mylog logger.Logger, cfg *config.Config) error
 	log.Info("Consumer is listenning for the messages")
 
 	// Declaring service components
-	repository := database.New(database)
+	repository := db.New(database)
 	wbManager := ws.NewWebSocketManager()
 	service := services.New(repository, mylog, broker, cfg.App.PublicJwtSecret)
 	handler := handlers.New(service, mylog, wbManager)
