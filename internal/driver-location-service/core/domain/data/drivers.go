@@ -14,7 +14,6 @@ type DriverOnlineResponse struct {
 }
 
 // OFFLINE MODE
-
 type DriverOfflineRespones struct {
 	Status          string  `json:"status"`
 	Session_id      string  `json:"session_id"`

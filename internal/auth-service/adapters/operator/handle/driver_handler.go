@@ -79,7 +79,7 @@ func (ah *DriverHandler) Login() http.HandlerFunc {
 		}
 
 		jsonResponse(w, http.StatusOK, map[string]string{
-			"msg":        "Login successfully!", // CHANGED: from username-specific message
+			"msg":        "Login successfully!",
 			"jwt_access": accessToken,
 		})
 		ah.mylog.Info("Successfully login!")
