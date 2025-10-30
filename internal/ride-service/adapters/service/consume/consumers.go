@@ -1,4 +1,4 @@
-package consumer
+package consume
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"ride-hail/internal/config"
 	"ride-hail/internal/mylogger"
-	"ride-hail/internal/ride-service/adapters/driven/bm"
+	"ride-hail/internal/ride-service/adapters/service/rabbitmq"
 	"ride-hail/internal/ride-service/core/domain/dto"
 	"ride-hail/internal/ride-service/core/ports"
 	"sync"
@@ -142,7 +142,7 @@ func (n *Notification) processOrderMsg(msg amqp.Delivery) (error, bool) {
 // }
 
 func (n *Notification) initializeRabbitMQ() error {
-	mb, err := bm.New(n.appCtx, *n.cfg.RabbitMq, n.mylog)
+	mb, err := rabbitmq.New(n.appCtx, *n.cfg.RabbitMq, n.mylog)
 	if err != nil {
 		return fmt.Errorf("failed to connect to rabbitmq: %v", err)
 	}

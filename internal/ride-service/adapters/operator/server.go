@@ -1,20 +1,20 @@
-package myhttp
+package operator
 
 import (
 	"context"
 	"errors"
 	"fmt"
 	"net/http"
+	"ride-hail/internal/ride-service/adapters/operator/handlers"
+	"ride-hail/internal/ride-service/adapters/operator/middleware"
+	ws2 "ride-hail/internal/ride-service/adapters/operator/websocket"
 	"sync"
 	"time"
 
 	"ride-hail/internal/config"
 	"ride-hail/internal/mylogger"
-	"ride-hail/internal/ride-service/adapters/driven/bm"
-	"ride-hail/internal/ride-service/adapters/driven/db"
-	"ride-hail/internal/ride-service/adapters/driver/myhttp/handle"
-	"ride-hail/internal/ride-service/adapters/driver/myhttp/middleware"
-	"ride-hail/internal/ride-service/adapters/driver/myhttp/ws"
+	"ride-hail/internal/ride-service/adapters/service/database"
+	"ride-hail/internal/ride-service/adapters/service/rabbitmq"
 	"ride-hail/internal/ride-service/core/ports"
 	"ride-hail/internal/ride-service/core/services"
 )
@@ -28,7 +28,7 @@ type Server struct {
 	cfg    *config.Config
 	srv    *http.Server
 	mylog  mylogger.Logger
-	db     *db.DB
+	db     *database.DB
 	mb     ports.IRidesBroker
 	ctx    context.Context
 	appCtx context.Context
@@ -53,7 +53,7 @@ func (s *Server) Run() error {
 	mylog := s.mylog.Action("server_started")
 
 	// Initialize database connection
-	db, err := db.New(s.ctx, s.cfg.DB, mylog)
+	db, err := database.New(s.ctx, s.cfg.DB, mylog)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}
@@ -61,7 +61,7 @@ func (s *Server) Run() error {
 	mylog.Info("Successful database connection")
 
 	// Initialize RabbitMQ connection
-	mb, err := bm.New(s.appCtx, *s.cfg.RabbitMq, s.mylog)
+	mb, err := rabbitmq.New(s.appCtx, *s.cfg.RabbitMq, s.mylog)
 	if err != nil {
 		return fmt.Errorf("failed to connect to rabbitmq: %w", err)
 	}
@@ -137,21 +137,21 @@ func (s *Server) startHTTPServer() error {
 // Configure sets up the HTTP handlers for various APIs including Market Data, Data Mode control, and Health checks.
 func (s *Server) Configure() {
 	// Repositories
-	rideRepo := db.NewRidesRepo(s.db)
-	passengerRepo := db.NewPassengerRepo(s.db)
+	rideRepo := database.NewRidesRepo(s.db)
+	passengerRepo := database.NewPassengerRepo(s.db)
 
 	// services
 	rideService := services.NewRidesService(s.appCtx, s.mylog, rideRepo, s.mb, nil)
 	passengerService := services.NewPassengerService(s.appCtx, s.mylog, passengerRepo, nil)
 
 	// handlers
-	rideHandler := handle.NewRidesHandler(rideService, s.mylog)
-	eventHander := ws.NewEventHandler(s.cfg.App.PublicJwtSecret)
+	rideHandler := handlers.NewRidesHandler(rideService, s.mylog)
+	eventHander := ws2.NewEventHandler(s.cfg.App.PublicJwtSecret)
 
 	authMiddleware := middleware.NewAuthMiddleware(s.cfg.App.PublicJwtSecret)
 	// Register routes
 
-	dispatcher := ws.NewDispathcer(s.mylog, passengerService, *eventHander)
+	dispatcher := ws2.NewDispathcer(s.mylog, passengerService, *eventHander)
 	dispatcher.InitHandler()
 
 	// TODO: add middleware

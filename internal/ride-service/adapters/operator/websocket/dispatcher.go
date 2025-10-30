@@ -1,4 +1,4 @@
-package ws
+package websocket
 
 import (
 	"context"
@@ -43,7 +43,7 @@ type Dispatcher struct {
 func NewDispathcer(log mylogger.Logger, passengerRepo ports.IPassengerService, eventHader EventHandler) *Dispatcher {
 	return &Dispatcher{
 		clients:          make(ClientList),
-		hander: make(map[string]EventHandle),
+		hander:           make(map[string]EventHandle),
 		PassengerService: passengerRepo,
 		log:              log,
 		eventHandler:     eventHader,

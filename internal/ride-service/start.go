@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/http"
 	"os/signal"
-	"ride-hail/internal/ride-service/adapters/driver/myhttp"
 	"ride-hail/internal/config"
 	"ride-hail/internal/mylogger"
+	"ride-hail/internal/ride-service/adapters/operator"
 	"syscall"
 )
 
@@ -17,7 +17,7 @@ func Execute(ctx context.Context, mylog mylogger.Logger, cfg *config.Config) err
 	newCtx, close := signal.NotifyContext(ctx, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM)
 	defer close()
 
-	server := myhttp.NewServer(newCtx, ctx, mylog, cfg)
+	server := operator.NewServer(newCtx, ctx, mylog, cfg)
 
 	// Run server in goroutine
 	runErrCh := make(chan error, 1)
