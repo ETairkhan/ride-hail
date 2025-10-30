@@ -3,9 +3,10 @@ package ws
 import (
 	"context"
 	"encoding/json"
-	"ride-hail/internal/logger"
 	"sync"
 	"time"
+
+	"ride-hail/internal/logger"
 
 	websocketdto "ride-hail/internal/ride-service/core/domain/websocket_dto"
 

@@ -2,6 +2,7 @@ package operator
 
 import (
 	"net/http"
+
 	"ride-hail/internal/driver-location-service/adapters/operator/handlers"
 	"ride-hail/internal/driver-location-service/adapters/operator/middleware"
 

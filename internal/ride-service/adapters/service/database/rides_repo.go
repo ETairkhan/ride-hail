@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+
 	"ride-hail/internal/ride-service/core/domain/data"
 	"ride-hail/internal/ride-service/core/domain/model"
 	"ride-hail/internal/ride-service/core/ports"
@@ -372,7 +373,6 @@ func (pr *RidesRepo) CancelEveryPossibleRides(ctx context.Context) error {
 
 	_, err := conn.Exec(ctx, q)
 	if err != nil {
-
 		// tx.Rollback(ctx)
 		return err
 	}

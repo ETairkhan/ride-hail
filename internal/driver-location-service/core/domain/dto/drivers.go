@@ -53,7 +53,7 @@ type NewLocation struct {
 }
 
 type NewLocationResponse struct {
-	Coordinate_id string `json:"coordinate_id"`
+	Coordinate_id string    `json:"coordinate_id"`
 	Updated_at    time.Time `json:"updated_at"`
 }
 

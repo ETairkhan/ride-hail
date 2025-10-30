@@ -311,7 +311,6 @@ func NewCipher(key []byte) (*Cipher, error) {
 	var result Cipher
 	if k := len(key); k < 1 || k > 56 {
 		return nil, errors.New("crypto/blowfish: invalid key size " + strconv.Itoa(int(k)))
-
 	}
 	initCipher(&result)
 	ExpandKey(key, &result)

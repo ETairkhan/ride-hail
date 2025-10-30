@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"ride-hail/internal/auth-service/core/domain/models"
 
 	"github.com/jackc/pgx/v5"

@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"ride-hail/internal/driver-location-service/core/ports/driver"
-	"ride-hail/internal/logger"
 	"sync"
 	"time"
+
+	"ride-hail/internal/driver-location-service/core/ports/driver"
+	"ride-hail/internal/logger"
 
 	dto "ride-hail/internal/driver-location-service/core/domain/dto"
 	messagebrokerdto "ride-hail/internal/driver-location-service/core/domain/message_broker_dto"

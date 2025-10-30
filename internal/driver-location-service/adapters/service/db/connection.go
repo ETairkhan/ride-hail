@@ -3,9 +3,10 @@ package db
 import (
 	"context"
 	"fmt"
+	"sync"
+
 	"ride-hail/internal/config"
 	"ride-hail/internal/logger"
-	"sync"
 
 	"github.com/jackc/pgx/v5"
 )

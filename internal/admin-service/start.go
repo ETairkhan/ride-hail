@@ -5,8 +5,9 @@ import (
 	"errors"
 	"net/http"
 	"os/signal"
-	"ride-hail/internal/admin-service/adapters/operator"
 	"syscall"
+
+	"ride-hail/internal/admin-service/adapters/operator"
 
 	"ride-hail/internal/config"
 	"ride-hail/internal/logger"

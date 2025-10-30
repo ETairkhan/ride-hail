@@ -2,6 +2,7 @@ package ports
 
 import (
 	"context"
+
 	"ride-hail/internal/ride-service/core/domain/data"
 	messagebrokerdto "ride-hail/internal/ride-service/core/domain/message_broker_dto"
 	"ride-hail/internal/ride-service/core/domain/model"

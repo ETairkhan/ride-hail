@@ -3,8 +3,9 @@ package db
 import (
 	"context"
 	"fmt"
-	"ride-hail/internal/driver-location-service/core/domain/model"
 	"time"
+
+	"ride-hail/internal/driver-location-service/core/domain/model"
 
 	"github.com/jackc/pgx/v5"
 )

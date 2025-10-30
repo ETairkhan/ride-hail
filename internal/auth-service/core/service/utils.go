@@ -6,8 +6,9 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
-	"ride-hail/internal/auth-service/core/domain/data"
 	"strings"
+
+	"ride-hail/internal/auth-service/core/domain/data"
 )
 
 const (

@@ -3,8 +3,9 @@ package middleware
 import (
 	"fmt"
 	"net/http"
-	"ride-hail/internal/driver-location-service/adapters/operator/handlers"
 	"strings"
+
+	"ride-hail/internal/driver-location-service/adapters/operator/handlers"
 
 	jwt "github.com/golang-jwt/jwt"
 )

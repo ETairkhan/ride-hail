@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"ride-hail/internal/logger"
-	"ride-hail/internal/ride-service/core/ports"
 	"sync"
 	"time"
+
+	"ride-hail/internal/logger"
+	"ride-hail/internal/ride-service/core/ports"
 
 	websocketdto "ride-hail/internal/ride-service/core/domain/websocket_dto"
 

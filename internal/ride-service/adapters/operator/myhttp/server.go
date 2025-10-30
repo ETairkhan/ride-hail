@@ -5,6 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sync"
+	"time"
+
 	"ride-hail/internal/config"
 	"ride-hail/internal/logger"
 	"ride-hail/internal/ride-service/adapters/operator/myhttp/handle"
@@ -16,8 +19,6 @@ import (
 	websocketdto "ride-hail/internal/ride-service/core/domain/websocket_dto"
 	"ride-hail/internal/ride-service/core/ports"
 	"ride-hail/internal/ride-service/core/services"
-	"sync"
-	"time"
 )
 
 var ErrServerClosed = errors.New("Server closed")

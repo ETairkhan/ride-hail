@@ -5,13 +5,14 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sync"
+	"time"
+
 	handle2 "ride-hail/internal/auth-service/adapters/operator/handle"
 	"ride-hail/internal/auth-service/adapters/service/database"
 	"ride-hail/internal/auth-service/core/service"
 	"ride-hail/internal/config"
 	"ride-hail/internal/logger"
-	"sync"
-	"time"
 )
 
 var ErrServerClosed = errors.New("Server closed")

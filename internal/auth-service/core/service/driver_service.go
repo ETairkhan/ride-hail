@@ -4,12 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
+
 	"ride-hail/internal/auth-service/adapters/service/database"
 	"ride-hail/internal/auth-service/core/domain/data"
 	"ride-hail/internal/auth-service/core/domain/models"
 	"ride-hail/internal/config"
 	"ride-hail/internal/logger"
-	"time"
 
 	"github.com/golang-jwt/jwt"
 )

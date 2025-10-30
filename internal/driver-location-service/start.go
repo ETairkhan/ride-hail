@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"net/http"
 	"os/signal"
+	"syscall"
+
 	"ride-hail/internal/driver-location-service/adapters/operator"
 	"ride-hail/internal/driver-location-service/adapters/operator/handlers"
-	"syscall"
 
 	"ride-hail/internal/config"
 	"ride-hail/internal/driver-location-service/adapters/service/db"
