@@ -8,8 +8,6 @@ import (
 	"regexp"
 	"ride-hail/internal/auth-service/core/domain/dto"
 	"strings"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -149,12 +147,12 @@ func validatePassword(password string) error {
 }
 
 func hashPassword(password string) ([]byte, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), HashFactor)
+	bytes, err := GenerateFromPassword([]byte(password), HashFactor)
 	return bytes, err
 }
 
 func checkPassword(hashed []byte, password string) bool {
-	return bcrypt.CompareHashAndPassword(hashed, []byte(password)) == nil
+	return CompareHashAndPassword(hashed, []byte(password)) == nil
 }
 
 // ================ Driver ================
