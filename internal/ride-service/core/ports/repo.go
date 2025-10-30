@@ -18,6 +18,8 @@ type IRidesRepo interface {
 	CreateRide(context.Context, model.Rides) (string, error)
 	GetDistance(context.Context, dto.RidesRequestDto) (float64, error)
 	GetNumberRides(context.Context) (int64, error)
+	CancelRide(ctx context.Context, rideID string, reason string, passengerID string) error 
+	GetRideByID(ctx context.Context, rideID string) (model.Rides, error) 
 }
 
 type IPassengerRepo interface {
