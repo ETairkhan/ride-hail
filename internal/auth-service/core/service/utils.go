@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
-	"ride-hail/internal/auth-service/core/domain/dto"
+	"ride-hail/internal/auth-service/core/domain/data"
 	"strings"
 )
 
@@ -35,7 +35,7 @@ var AllowedRoles = map[string]bool{
 	"DRIVER":    true,
 }
 
-func validateUserRegistration(ctx context.Context, regReq dto.UserRegistrationRequest) error {
+func validateUserRegistration(ctx context.Context, regReq data.UserRegistrationRequest) error {
 	if err := validateName(regReq.Username); err != nil {
 		return fmt.Errorf("invalid name: %v", err)
 	}

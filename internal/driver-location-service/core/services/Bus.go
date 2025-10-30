@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"ride-hail/internal/driver-location-service/core/ports/driver"
-	"ride-hail/internal/mylogger"
+	"ride-hail/internal/logger"
 	"sync"
 	"time"
 
@@ -31,7 +31,7 @@ type Distributor struct {
 	// Tools
 	broker driven.IDriverBroker
 	ctx    context.Context
-	log    mylogger.Logger
+	log    logger.Logger
 }
 
 type DriverMessage struct {
@@ -54,7 +54,7 @@ func NewDistributor(
 	wsManager driven.WSConnectionMeneger,
 	broker driven.IDriverBroker,
 	driverService driver.IDriverService,
-	log mylogger.Logger,
+	log logger.Logger,
 ) *Distributor {
 	distributor := &Distributor{
 		rideOffers:     rideOffers,

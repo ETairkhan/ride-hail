@@ -8,13 +8,13 @@ import (
 	"syscall"
 
 	"ride-hail/internal/config"
-	"ride-hail/internal/mylogger"
-	"ride-hail/internal/ride-service/adapters/driver/myhttp"
+	"ride-hail/internal/logger"
+	"ride-hail/internal/ride-service/adapters/operator/myhttp"
 )
 
 type RideService struct{}
 
-func Execute(ctx context.Context, mylog mylogger.Logger, cfg *config.Config) error {
+func Execute(ctx context.Context, mylog logger.Logger, cfg *config.Config) error {
 	newCtx, close := signal.NotifyContext(ctx, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM)
 	defer close()
 

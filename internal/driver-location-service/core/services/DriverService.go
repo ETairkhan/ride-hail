@@ -10,16 +10,16 @@ import (
 	websocketdto "ride-hail/internal/driver-location-service/core/domain/websocket_dto"
 	"ride-hail/internal/driver-location-service/core/ports/driven"
 	ports "ride-hail/internal/driver-location-service/core/ports/driven"
-	"ride-hail/internal/mylogger"
+	"ride-hail/internal/logger"
 )
 
 type DriverService struct {
 	repositories driven.IDriverRepository
-	log          mylogger.Logger
+	log          logger.Logger
 	broker       ports.IDriverBroker
 }
 
-func NewDriverService(repositories driven.IDriverRepository, log mylogger.Logger, broker ports.IDriverBroker) *DriverService {
+func NewDriverService(repositories driven.IDriverRepository, log logger.Logger, broker ports.IDriverBroker) *DriverService {
 	return &DriverService{repositories: repositories, log: log, broker: broker}
 }
 

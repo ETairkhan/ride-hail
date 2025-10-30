@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"ride-hail/internal/mylogger"
+	"ride-hail/internal/logger"
 	"ride-hail/internal/ride-service/core/domain/dto"
 	"ride-hail/internal/ride-service/core/domain/model"
 	websocketdto "ride-hail/internal/ride-service/core/domain/websocket_dto"
@@ -40,7 +40,7 @@ const (
 )
 
 type RidesService struct {
-	mylog          mylogger.Logger
+	mylog          logger.Logger
 	RidesRepo      ports.IRidesRepo
 	RidesBroker    ports.IRidesBroker
 	RidesWebsocket ports.INotifyWebsocket
@@ -48,7 +48,7 @@ type RidesService struct {
 }
 
 func NewRidesService(ctx context.Context,
-	log mylogger.Logger,
+	log logger.Logger,
 	RidesRepo ports.IRidesRepo,
 	RidesBroker ports.IRidesBroker,
 	RidesWebsocket ports.INotifyWebsocket,

@@ -6,21 +6,21 @@ import (
 	"fmt"
 	"time"
 
-	"ride-hail/internal/mylogger"
+	"ride-hail/internal/logger"
 	"ride-hail/internal/ride-service/core/ports"
 
 	"github.com/jackc/pgx/v5"
 )
 
 type PassengerService struct {
-	mylog          mylogger.Logger
+	mylog          logger.Logger
 	PassengerRepo  ports.IPassengerRepo
 	RidesWebsocket ports.INotifyWebsocket
 	ctx            context.Context
 }
 
 func NewPassengerService(ctx context.Context,
-	log mylogger.Logger,
+	log logger.Logger,
 	PassengerRepo ports.IPassengerRepo,
 	RidesWebsocket ports.INotifyWebsocket,
 ) ports.IPassengerService {

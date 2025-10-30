@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"ride-hail/internal/auth-service/adapters/driven/db"
-	"ride-hail/internal/auth-service/core/domain/dto"
+	"ride-hail/internal/auth-service/adapters/service/db"
+	"ride-hail/internal/auth-service/core/domain/data"
 	"ride-hail/internal/auth-service/core/domain/models"
 	"ride-hail/internal/config"
-	"ride-hail/internal/mylogger"
+	"ride-hail/internal/logger"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -18,14 +18,14 @@ type DriverService struct {
 	ctx        context.Context
 	cfg        *config.Config
 	driverRepo *db.DriverRepo
-	mylog      mylogger.Logger
+	mylog      logger.Logger
 }
 
 func NewDriverService(
 	ctx context.Context,
 	cfg *config.Config,
 	driverRepo *db.DriverRepo,
-	mylogger mylogger.Logger,
+	mylogger logger.Logger,
 ) *DriverService {
 	return &DriverService{
 		ctx:        ctx,
@@ -36,10 +36,10 @@ func NewDriverService(
 }
 
 // ======================= Register =======================
-func (ds *DriverService) Register(ctx context.Context, regReq dto.DriverRegistrationRequest) (string, string, error) {
+func (ds *DriverService) Register(ctx context.Context, regReq data.DriverRegistrationRequest) (string, string, error) {
 	mylog := ds.mylog.Action("Register")
 
-	r := dto.UserRegistrationRequest{
+	r := data.UserRegistrationRequest{
 		Username:  regReq.Username,
 		Email:     regReq.Email,
 		Role:      "DRIVER",
@@ -101,7 +101,7 @@ func (ds *DriverService) Register(ctx context.Context, regReq dto.DriverRegistra
 	return id, accessTokenString, nil
 }
 
-func (ds *DriverService) Login(ctx context.Context, authReq dto.DriverAuthRequest) (string, error) {
+func (ds *DriverService) Login(ctx context.Context, authReq data.DriverAuthRequest) (string, error) {
 	mylog := ds.mylog.Action("Login")
 
 	if err := validateLogin(ctx, authReq.Email, authReq.Password); err != nil {

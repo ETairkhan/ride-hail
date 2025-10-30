@@ -6,16 +6,16 @@ import (
 
 	"ride-hail/internal/admin-service/core/domain/dto"
 	"ride-hail/internal/admin-service/core/ports"
-	"ride-hail/internal/mylogger"
+	"ride-hail/internal/logger"
 )
 
 type ActiveDrivesService struct {
 	ctx              context.Context
-	mylog            mylogger.Logger
+	mylog            logger.Logger
 	activeDrivesRepo ports.IActiveRidesRepo
 }
 
-func NewActiveDrivesService(ctx context.Context, mylog mylogger.Logger, activeDrivesRepo ports.IActiveRidesRepo) *ActiveDrivesService {
+func NewActiveDrivesService(ctx context.Context, mylog logger.Logger, activeDrivesRepo ports.IActiveRidesRepo) *ActiveDrivesService {
 	return &ActiveDrivesService{
 		ctx:              ctx,
 		mylog:            mylog,

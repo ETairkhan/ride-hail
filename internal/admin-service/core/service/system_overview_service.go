@@ -7,16 +7,16 @@ import (
 
 	"ride-hail/internal/admin-service/core/domain/dto"
 	"ride-hail/internal/admin-service/core/ports"
-	"ride-hail/internal/mylogger"
+	"ride-hail/internal/logger"
 )
 
 type SystemOverviewService struct {
 	ctx                context.Context
-	mylog              mylogger.Logger
+	mylog              logger.Logger
 	systemOverviewRepo ports.ISystemOverviewRepo
 }
 
-func NewSystemOverviewService(ctx context.Context, mylog mylogger.Logger, systemOverviewRepo ports.ISystemOverviewRepo) *SystemOverviewService {
+func NewSystemOverviewService(ctx context.Context, mylog logger.Logger, systemOverviewRepo ports.ISystemOverviewRepo) *SystemOverviewService {
 	return &SystemOverviewService{
 		ctx:                ctx,
 		mylog:              mylog,

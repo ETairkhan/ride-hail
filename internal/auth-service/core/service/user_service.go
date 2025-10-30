@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"ride-hail/internal/auth-service/adapters/driven/db"
-	"ride-hail/internal/auth-service/core/domain/dto"
+	"ride-hail/internal/auth-service/adapters/service/db"
+	"ride-hail/internal/auth-service/core/domain/data"
 	"ride-hail/internal/auth-service/core/domain/models"
 	"ride-hail/internal/config"
-	"ride-hail/internal/mylogger"
+	"ride-hail/internal/logger"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -18,14 +18,14 @@ type AuthService struct {
 	ctx      context.Context
 	cfg      *config.Config
 	authRepo db.AuthRepo
-	mylog    mylogger.Logger
+	mylog    logger.Logger
 }
 
 func NewAuthService(
 	ctx context.Context,
 	cfg *config.Config,
 	authRepo *db.AuthRepo,
-	mylogger mylogger.Logger,
+	mylogger logger.Logger,
 ) *AuthService {
 	return &AuthService{
 		ctx:      ctx,
@@ -36,7 +36,7 @@ func NewAuthService(
 }
 
 // ======================= Register =======================
-func (as *AuthService) Register(ctx context.Context, regReq dto.UserRegistrationRequest) (string, string, error) {
+func (as *AuthService) Register(ctx context.Context, regReq data.UserRegistrationRequest) (string, string, error) {
 	mylog := as.mylog.Action("Register")
 
 	if err := validateUserRegistration(ctx, regReq); err != nil {
@@ -82,7 +82,7 @@ func (as *AuthService) Register(ctx context.Context, regReq dto.UserRegistration
 	return id, accessTokenString, nil
 }
 
-func (as *AuthService) Login(ctx context.Context, authReq dto.UserAuthRequest) (string, error) {
+func (as *AuthService) Login(ctx context.Context, authReq data.UserAuthRequest) (string, error) {
 	mylog := as.mylog.Action("Login")
 
 	if err := validateLogin(ctx, authReq.Email, authReq.Password); err != nil {

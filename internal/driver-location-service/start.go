@@ -6,19 +6,19 @@ import (
 	"fmt"
 	"net/http"
 	"os/signal"
+	"ride-hail/internal/driver-location-service/adapters/operator"
+	"ride-hail/internal/driver-location-service/adapters/operator/handlers"
 	"syscall"
 
 	"ride-hail/internal/config"
-	"ride-hail/internal/driver-location-service/adapters/driven/bm"
-	"ride-hail/internal/driver-location-service/adapters/driven/db"
-	"ride-hail/internal/driver-location-service/adapters/driven/ws"
-	"ride-hail/internal/driver-location-service/adapters/driver/myhttp"
-	"ride-hail/internal/driver-location-service/adapters/driver/myhttp/handlers"
+	"ride-hail/internal/driver-location-service/adapters/service/db"
+	"ride-hail/internal/driver-location-service/adapters/service/rabbitmq"
+	"ride-hail/internal/driver-location-service/adapters/service/ws"
 	"ride-hail/internal/driver-location-service/core/services"
-	"ride-hail/internal/mylogger"
+	"ride-hail/internal/logger"
 )
 
-func Execute(ctx context.Context, mylog mylogger.Logger, cfg *config.Config) error {
+func Execute(ctx context.Context, mylog logger.Logger, cfg *config.Config) error {
 	log := mylog.Action("Execute")
 
 	// Context Declaration
@@ -35,7 +35,7 @@ func Execute(ctx context.Context, mylog mylogger.Logger, cfg *config.Config) err
 	log.Info("Database connection established successufuly")
 
 	// Declaring Broker
-	broker, err := bm.New(ctx, *cfg.RabbitMq, mylog)
+	broker, err := rabbitmq.New(ctx, *cfg.RabbitMq, mylog)
 	if err != nil {
 		log.Error("Broker connection failed: ", err)
 		return err
@@ -46,7 +46,7 @@ func Execute(ctx context.Context, mylog mylogger.Logger, cfg *config.Config) err
 	// messageDriver := make(map[string]chan dto.DriverRideOffer)
 
 	// Declaring Consumer
-	consumer := bm.NewConsumer(newCtx, broker, mylog)
+	consumer := rabbitmq.NewConsumer(newCtx, broker, mylog)
 	req, statusMsgs, err := consumer.ListenAll()
 	if err != nil {
 		log.Error("Failed to subscribe for messages", err)
@@ -71,7 +71,7 @@ func Execute(ctx context.Context, mylog mylogger.Logger, cfg *config.Config) err
 	log.Info("Distribur successfully setted up and ready to work")
 
 	// Defining the rounter
-	mux := myhttp.Router(handler, cfg)
+	mux := operator.Router(handler, cfg)
 	httpServer := &http.Server{
 		Addr:    fmt.Sprintf(":%v", cfg.Srv.DriverLocationServicePort),
 		Handler: mux,
