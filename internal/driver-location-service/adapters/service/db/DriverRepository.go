@@ -96,7 +96,6 @@ func (dr *DriverRepository) GoOffline(ctx context.Context, driver_id string) (mo
 
 func (dr *DriverRepository) UpdateLocation(ctx context.Context, driver_id string, newLocation model.NewLocation) (model.NewLocationResponse, error) {
 	// First, update the existing current coordinate or insert a new one
-	// We need to handle the case where there might not be a current coordinate yet
 
 	// Check if there's an existing current coordinate
 	CheckExistingQuery := `
@@ -108,6 +107,7 @@ func (dr *DriverRepository) UpdateLocation(ctx context.Context, driver_id string
 	err := dr.db.GetConn().QueryRow(ctx, CheckExistingQuery, driver_id).Scan(&existingCoordID)
 
 	var response model.NewLocationResponse
+	var updatedAt time.Time
 
 	if err == nil {
 		// Update existing current coordinate
@@ -117,7 +117,7 @@ func (dr *DriverRepository) UpdateLocation(ctx context.Context, driver_id string
 			WHERE coord_id = $3
 			RETURNING coord_id, updated_at;
 		`
-		err = dr.db.GetConn().QueryRow(ctx, UpdateQuery, newLocation.Latitude, newLocation.Longitude, existingCoordID).Scan(&response.Coordinate_id, &response.Updated_at)
+		err = dr.db.GetConn().QueryRow(ctx, UpdateQuery, newLocation.Latitude, newLocation.Longitude, existingCoordID).Scan(&response.Coordinate_id, &updatedAt)
 		if err != nil {
 			return model.NewLocationResponse{}, err
 		}
@@ -126,13 +126,16 @@ func (dr *DriverRepository) UpdateLocation(ctx context.Context, driver_id string
 		InsertQuery := `
 			INSERT INTO coordinates (entity_id, entity_type, address, latitude, longitude, is_current)
 			VALUES ($1, 'DRIVER', 'Current Location', $2, $3, true)
-			RETURNING coord_id, updated_at;
+			RETURNING coord_id, created_at;
 		`
-		err = dr.db.GetConn().QueryRow(ctx, InsertQuery, driver_id, newLocation.Latitude, newLocation.Longitude).Scan(&response.Coordinate_id, &response.Updated_at)
+		err = dr.db.GetConn().QueryRow(ctx, InsertQuery, driver_id, newLocation.Latitude, newLocation.Longitude).Scan(&response.Coordinate_id, &updatedAt)
 		if err != nil {
 			return model.NewLocationResponse{}, err
 		}
 	}
+
+	// Convert time.Time to string in RFC3339 format
+	response.Updated_at = updatedAt.Format(time.RFC3339)
 
 	// Then insert into location history
 	NewLocationQuery := `
