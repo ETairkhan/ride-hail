@@ -1,8 +1,8 @@
 package services
 
 import (
-	"ride-hail/internal/driver-location-service/adapters/service/db"
-	ports "ride-hail/internal/driver-location-service/core/ports/service"
+	"ride-hail/internal/driver-location-service/adapters/driven/db"
+	ports "ride-hail/internal/driver-location-service/core/ports/driven"
 	"ride-hail/internal/mylogger"
 )
 

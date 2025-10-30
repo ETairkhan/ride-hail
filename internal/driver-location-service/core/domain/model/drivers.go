@@ -8,6 +8,7 @@ type DriverCoordinates struct {
 }
 
 // Offline Mode
+
 type DriverOfflineResponse struct {
 	Session_id      string
 	Session_summary Summary
@@ -20,6 +21,7 @@ type Summary struct {
 }
 
 // START RIDE
+
 type StartRide struct {
 	Ride_id         string
 	Driver_location DriverCoordinates

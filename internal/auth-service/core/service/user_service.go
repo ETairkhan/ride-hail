@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"ride-hail/internal/auth-service/core/domain/data"
+	"ride-hail/internal/auth-service/core/domain/dto"
 	"ride-hail/internal/auth-service/core/domain/models"
 	"ride-hail/internal/auth-service/core/ports"
 	"ride-hail/internal/config"
@@ -36,7 +36,7 @@ func NewAuthService(
 }
 
 // ======================= Register =======================
-func (as *AuthService) Register(ctx context.Context, regReq data.UserRegistrationRequest) (string, string, error) {
+func (as *AuthService) Register(ctx context.Context, regReq dto.UserRegistrationRequest) (string, string, error) {
 	mylog := as.mylog.Action("Register")
 
 	if err := validateRegistration(ctx, regReq.Username, regReq.Email, regReq.Password); err != nil {
@@ -85,7 +85,7 @@ func (as *AuthService) Register(ctx context.Context, regReq data.UserRegistratio
 	return id, accessTokenString, nil
 }
 
-func (as *AuthService) Login(ctx context.Context, authReq data.UserAuthRequest) (string, error) {
+func (as *AuthService) Login(ctx context.Context, authReq dto.UserAuthRequest) (string, error) {
 	mylog := as.mylog.Action("Login")
 
 	if err := validateLogin(ctx, authReq.Email, authReq.Password); err != nil {
@@ -125,10 +125,10 @@ func (as *AuthService) Login(ctx context.Context, authReq data.UserAuthRequest) 
 	return accesssTokenString, nil
 }
 
-func (as *AuthService) Logout(ctx context.Context, auth data.UserAuthRequest) error {
+func (as *AuthService) Logout(ctx context.Context, auth dto.UserAuthRequest) error {
 	return nil
 }
 
-func (as *AuthService) Protected(ctx context.Context, auth data.UserAuthRequest) error {
+func (as *AuthService) Protected(ctx context.Context, auth dto.UserAuthRequest) error {
 	return nil
 }
