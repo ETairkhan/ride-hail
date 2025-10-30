@@ -2,11 +2,10 @@ package service
 
 import (
 	"context"
-	"crypto/rand"
-	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"regexp"
 	"strings"
 )
@@ -109,43 +108,13 @@ func validatePassword(password string) error {
 }
 
 func hashPassword(password string) ([]byte, error) {
-	// Generate a random salt
-	salt := make([]byte, 16)
-	if _, err := rand.Read(salt); err != nil {
-		return nil, fmt.Errorf("failed to generate salt: %v", err)
-	}
 
-	// Combine password and salt, then hash
-	hash := sha256.New()
-	hash.Write([]byte(password))
-	hash.Write(salt)
-	hashed := hash.Sum(nil)
-
-	// Combine salt and hash for storage
-	result := make([]byte, len(salt)+len(hashed))
-	copy(result[:16], salt)
-	copy(result[16:], hashed)
-
-	return result, nil
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), HashFactor)
+	return bytes, err
 }
 
 func checkPassword(hashed []byte, password string) bool {
-	if len(hashed) != 48 { // 16 (salt) + 32 (sha256 hash)
-		return false
-	}
-
-	// Extract salt and original hash
-	salt := hashed[:16]
-	originalHash := hashed[16:]
-
-	// Recompute hash with the same salt
-	hash := sha256.New()
-	hash.Write([]byte(password))
-	hash.Write(salt)
-	computedHash := hash.Sum(nil)
-
-	// Compare hashes
-	return string(computedHash) == string(originalHash)
+	return bcrypt.CompareHashAndPassword(hashed, []byte(password)) == nil
 }
 
 // ================ Driver
