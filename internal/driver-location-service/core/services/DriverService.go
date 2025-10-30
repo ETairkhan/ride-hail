@@ -2,9 +2,12 @@ package services
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"ride-hail/internal/driver-location-service/core/domain/dto"
 	"ride-hail/internal/driver-location-service/core/domain/model"
+	websocketdto "ride-hail/internal/driver-location-service/core/domain/websocket_dto"
 	"ride-hail/internal/driver-location-service/core/ports/driven"
 	ports "ride-hail/internal/driver-location-service/core/ports/driven"
 	"ride-hail/internal/mylogger"
@@ -12,11 +15,11 @@ import (
 
 type DriverService struct {
 	repositories driven.IDriverRepository
-	log          *mylogger.Logger
+	log          mylogger.Logger
 	broker       ports.IDriverBroker
 }
 
-func NewDriverService(repositories driven.IDriverRepository, log *mylogger.Logger, broker ports.IDriverBroker) *DriverService {
+func NewDriverService(repositories driven.IDriverRepository, log mylogger.Logger, broker ports.IDriverBroker) *DriverService {
 	return &DriverService{repositories: repositories, log: log, broker: broker}
 }
 
@@ -106,4 +109,93 @@ func (ds *DriverService) CompleteRide(ctx context.Context, request dto.RideCompl
 	response.DriverEarning = results.DriverEarning
 	response.CompletedAt = results.CompletedAt
 	return response, nil
+}
+
+func (ds *DriverService) FindAppropriateDrivers(ctx context.Context, longtitude, latitude float64, vehicleType string) ([]dto.DriverInfo, error) {
+	drivers, err := ds.repositories.FindDrivers(ctx, longtitude, latitude, vehicleType)
+	if err != nil {
+		fmt.Println("Service Error Arrived ", err)
+		return []dto.DriverInfo{}, err
+	}
+	var results []dto.DriverInfo
+	for _, driver := range drivers {
+		var result dto.DriverInfo
+		result.DriverId = driver.DriverId
+		result.Email = driver.Email
+		result.Latitude = driver.Latitude
+		result.Longitude = driver.Longitude
+		result.Rating = driver.Rating
+		result.Name = driver.Name
+		result.Distance = driver.Distance
+		if err := json.Unmarshal(driver.Vehicle, &result.Vehicle); err != nil {
+			fmt.Println("Service Error Arrived ", err)
+			return []dto.DriverInfo{}, err
+		}
+		results = append(results, result)
+	}
+	return results, nil
+}
+
+func (ds *DriverService) CalculateRideDetails(ctx context.Context, driverLocation dto.Location, passagerLocation dto.Location) (float64, int, error) {
+	distance, err := ds.repositories.CalculateRideDetails(ctx,
+		model.Location{
+			Latitude:  driverLocation.Latitude,
+			Longitude: driverLocation.Longitude,
+		},
+		model.Location{
+			Latitude:  passagerLocation.Latitude,
+			Longitude: passagerLocation.Longitude,
+		},
+	)
+	if err != nil {
+		return 0, 0, err
+	}
+	minutes := int(distance / 45)
+	return distance, minutes, nil
+}
+
+func (d *DriverService) UpdateDriverStatus(ctx context.Context, driver_id string, status string) error {
+	return d.repositories.UpdateDriverStatus(ctx, driver_id, status)
+}
+
+func (d *DriverService) CheckDriverById(ctx context.Context, driver_id string) (bool, error) {
+	return d.repositories.CheckDriverById(ctx, driver_id)
+}
+
+func (d *DriverService) GetDriverIdByRideId(ctx context.Context, ride_id string) (string, error) {
+	// This is a placeholder implementation. Replace with actual logic to get driver ID by ride ID.
+	// For example, you might query the database to find the driver associated with the given ride ID.
+	return d.repositories.GetDriverIdByRideId(ctx, ride_id)
+}
+
+func (d *DriverService) GetRideIdByDriverId(ctx context.Context, driver_id string) (string, error) {
+	// This is a placeholder implementation. Replace with actual logic to get ride ID by driver ID.
+	return d.repositories.GetRideIdByDriverId(ctx, driver_id)
+}
+
+func (d *DriverService) GetRideDetailsByRideId(ctx context.Context, ride_id string) (websocketdto.RideDetailsMessage, error) {
+	// This is a placeholder implementation. Replace with actual logic to get ride details by ride ID.
+	// For example, you might query the database to find the ride details associated with the given ride ID.
+	rideDetailsModel, err := d.repositories.GetRideDetailsByRideId(ctx, ride_id)
+	fmt.Println("Ride Details Model: ", rideDetailsModel)
+	fmt.Println("User phone", string(rideDetailsModel.PassengerAttrs))
+	if err != nil {
+		return websocketdto.RideDetailsMessage{}, err
+	}
+	var rideDetails websocketdto.RideDetailsMessage
+	rideDetails.RideID = rideDetailsModel.Ride_id
+	rideDetails.PassengerName = rideDetailsModel.PassengerName
+	rideDetails.PickupLocation = websocketdto.Location{
+		Latitude:  rideDetailsModel.PickupLocation.Latitude,
+		Longitude: rideDetailsModel.PickupLocation.Longitude,
+		Address:   rideDetailsModel.PickupLocation.Address,
+	}
+	tempStruct := struct {
+		PhoneNumer string `json:"phone"`
+	}{}
+	if err := json.Unmarshal(rideDetailsModel.PassengerAttrs, &tempStruct); err != nil {
+		return websocketdto.RideDetailsMessage{}, err
+	}
+	rideDetails.PassengerPhone = tempStruct.PhoneNumer
+	return rideDetails, nil
 }

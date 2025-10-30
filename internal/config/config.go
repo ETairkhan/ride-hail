@@ -65,12 +65,12 @@ func New() (*Config, error) {
 	getEnvInt := func(key string, def int) int {
 		valStr := os.Getenv(key)
 		if valStr == "" {
-			fmt.Printf("using default key %v\n", def)
+			fmt.Printf("using default key: %v: %v\n", key, def)
 			return def
 		}
 		val, err := strconv.Atoi(valStr)
 		if err != nil {
-			fmt.Printf("using default key %v\n", def)
+			fmt.Printf("using default key: %v: %v", key, def)
 			return def
 		}
 		return val
@@ -95,7 +95,7 @@ func New() (*Config, error) {
 			Port: getEnvInt("WS_PORT", 8080),
 		},
 		Srv: &Serviceconfig{
-			RideServicePort:           getEnv("RIDE_SERVICE_PORT", "3002"),
+			RideServicePort:           getEnv("RIDE_SERVICE_PORT", "3000"),
 			DriverLocationServicePort: getEnv("DRIVER_LOCATION_SERVICE_PORT", "3001"),
 			AdminServicePort:          getEnv("ADMIN_SERVICE_PORT", "3004"),
 			AuthServicePort:           getEnv("AUTH_SERVICE_PORT", "3010"),
